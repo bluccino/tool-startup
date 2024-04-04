@@ -194,7 +194,7 @@
          # set prompt
 
       echo '' >>$RC
-      echo 'source $BIN/prompt.sh' >>$RC
+      echo 'source stup --prompt' >>$RC
 
          # pimp bash profile/recource file (if not yet pimped)
 
