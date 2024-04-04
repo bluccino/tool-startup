@@ -21,6 +21,10 @@
       echo      ''
       stup ---g 'system update commands:'
       echo      '  stup --apt            # update advanced packaging tool'
+      echo      '  stup --pimp           # install pimp'
+      echo      '  stup --python         # install Python 3.11'
+      echo      '  stup --rc             # install stuprc.sh'
+      echo      '  stup --vamos          # install vamos'
 
       if [ "$*" != "-?" ]; then  # comprehensive help
          stup ---g 'enhanced commands'
@@ -39,7 +43,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0c"
+      echo "1.0.0e"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -126,12 +130,110 @@
 
       stup ---g '=== downloads latest package informations ...'
       stup ---y 'sudo apt update'
-      sudo apt update
+      sudo apt update || exit 1
 
       stup ---g '=== upgrade installed packages to latest versions ...'
       stup ---y 'sudo apt upgrade'
-      sudo apt upgrade
-      exit 1
+      sudo apt upgrade || exit 1
+
+      exit 0
+   fi
+
+#===============================================================================
+# stup --pimp   # install pimp
+#===============================================================================
+
+   if [ "$*" == "--pimp" ]; then
+      stup ---g '=== install pimp ...'
+
+      BLUCCINO=https://raw.githubusercontent.com/bluccino
+      REPO=tool-pimp
+      URL="$BLUCCINO/$REPO/master"
+
+      stup ---y "curl -s $URL/bin/pimp >$BIN/pimp"
+      sudo curl -s $URL/bin/pimp >$BIN/pimp
+
+      stup ---y "chmod +x $BIN/pimp"
+      sudo chmod +x $BIN/pimp
+
+      exit 0
+   fi
+
+#===============================================================================
+# stup --rc   # install stuprc.sh
+#===============================================================================
+
+   if [ "$*" == "--rc" ]; then
+      stup ---g "=== install stuprc.sh ..."
+
+      RC="$BIN/stuprc.sh"
+
+      echo '#!/bin/bash' >$RC
+      echo '# stuprc.sh - startup resource file (always source!)' >>$RC
+      echo '' >>$RC
+      echo "export BIN=~/bin" >>$RC
+      echo "export TMP=~/tmp" >>$RC
+      echo "export ETC=~/etc" >>$RC
+      echo '' >>$RC
+      echo "export PATH=$BIN:$PATH" >>$RC
+      echo '' >>$RC
+      echo "alias activate='source pimp --activate'" >>$RC
+      echo "alias wd='source wd.sh'" >>$RC
+      echo "export WORKIDB=$ETC" >>$RC
+
+         # make sure that directories exist
+
+      if [ ! -d "~/bin" ]; then mkdir ~/bin; fi
+      if [ ! -d "~/etc" ]; then mkdir ~/etc; fi
+      if [ ! -d "~/tmp" ]; then mkdir ~/tmp; fi
+
+      exit 0
+   fi
+
+#===============================================================================
+# stup --python   # upgrade to Python 3.11
+#===============================================================================
+
+   if [ "$*" == "--python" ]; then
+      ERR="0"
+      stup --is-ubuntu || ERR="1"   # only for ubuntu
+      if [ "$ERR" != "0" ]; then
+         stup ---r "error: stup $*"
+         echo      '       --python option is only implemented for ubuntu platforms'
+         exit 1
+      fi
+
+      stup ---g '=== install python 3.11 ...'
+      stup ---y 'sudo apt-get install python3.11'
+      sudo apt-get install python3.11 || exit 1
+
+      stup ---y 'apt install python3.11-venv'
+      sudo apt install python3.11-venv
+
+      stup ---y 'sudo update-alternatives  --set python /usr/bin/python3.11'
+      sudo update-alternatives  --set python /usr/bin/python3.11
+
+      exit 0
+   fi
+
+#===============================================================================
+# stup --vamos   # install pimp
+#===============================================================================
+
+   if [ "$*" == "--vamos" ]; then
+      stup ---g '=== install vamos ...'
+
+      BLUCCINO=https://raw.githubusercontent.com/bluccino
+      REPO=tool-vamos
+      URL="$BLUCCINO/$REPO/master"
+
+      stup ---y "curl -s $URL/bin/vamos >$BIN/vamos"
+      sudo curl -s $URL/bin/vamos >$BIN/vamos
+
+      stup ---y "chmod +x $BIN/vamos"
+      sudo chmod +x $BIN/vamos
+
+      exit 0
    fi
 
 #===============================================================================
