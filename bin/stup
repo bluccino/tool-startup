@@ -45,7 +45,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0o"
+      echo "1.0.0p"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -274,7 +274,13 @@
 
       stup ---g '=== setup python3.11 as python3 standard ...'
       stup ---y 'sudo update-alternatives  --set python /usr/bin/python3.11'
-      sudo update-alternatives  --set python /usr/bin/python3.11
+      #sudo update-alternatives  --set python /usr/bin/python3.11
+
+      stup ---y 'sudo update-alternatives --install /usr/bin/python python3 /usr/bin/python3.11 1'
+      sudo update-alternatives --install /usr/bin/python python3 /usr/bin/python3.11 1
+
+      stup ---y 'sudo update-alternatives --config python3'
+      sudo update-alternatives --config python3
 
       stup ---g '=== installing pip ...'
       stup ---y 'sudo apt install python3-pip'
