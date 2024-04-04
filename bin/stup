@@ -65,6 +65,33 @@
    fi
 
 #-------------------------------------------------------------------------------
+# . ~stup -!  # install ~stup in ~/bin/
+#-------------------------------------------------------------------------------
+
+   if [ "$*" == "-!" ]; then
+      if [ "$_SOURCED" == 0 ]; then
+         stup ---r "bad command line: bash ~stup -! (or: ./~stup -!)"
+         echo      "    this command must run in sourced mode!"
+         unset _SOURCED
+         return 1 2>/dev/null || exit 1  # safe return/exit
+      fi
+
+      _ERR="0"
+      echo $PATH | grep '~/bin:' || _ERR="1"
+
+      if [ "$_ERR" != "0" ]; then
+         export PATH=~/bin:$PATH
+echo $PATH
+      fi
+
+      bash ~stup ---!                 # self install
+
+      unset _ERR
+      unset _SOURCED
+      return 0 2>/dev/null || exit 0  # safe return/exit
+   fi
+
+#-------------------------------------------------------------------------------
 #===============================================================================
 # after here only non sourced execution is allowed
 #===============================================================================
@@ -78,16 +105,25 @@
     fi
 
 #===============================================================================
-# ~stup -!   # install in a system binary directory
+# ~stup ---!   # install in a system binary directory
 #===============================================================================
 
-   if [ "$*" == "-!" ]; then
+   if [ "$*" == "---!" ]; then
       if [ ! -f ~stup ]; then
          bash ~stup ---r "error: stup -!" >&2
          echo      "       file ~stup not found!" >&2
          exit 1
       fi
       chmod +x ~stup
+
+      if [ ! -d ~/bin ]; then
+         bash ~stup ---c "missing ~/bin directory"
+         read -p "shall I create a ~/bin directory [Y/n]?" ANS
+		     if [ "$ANS" == "Y" ] || [ "$ANS" == "y" ] || [ "$ANS" == "" ]; then
+            bash ~stup ---g "=== creating ~/bin"
+            mkdir ~/bin
+		     fi
+      fi
 
       bash ~stup ---y "select target directory for installation of stup:"
       LIST=`bash ~stup --directories`
@@ -138,7 +174,7 @@
 
 	 if [ "$1" == "--update" ]; then
 	    URL=https://raw.githubusercontent.com/bluccino/tool-stup/master/bin/stup
-      PIMP=`which stup`
+      STUP=`which stup`
 
 	    stup ---g '=== updating stup ...'
 
@@ -146,18 +182,18 @@
 	    curl -s $URL >~stup
 
       ERR="0"
-      rm -f $PIMP >/dev/null || ERR="1"
+      rm -f $STUP >/dev/null || ERR="1"
 
       if [ "$ERR" == "0" ]; then
-	       echo "  cp ~stup $PIMP"
-         cp ~stup $PIMP
-	       echo "  chmod +x $PIMP"
-         chmod +x $PIMP
+	       echo "  cp ~stup $STUP"
+         cp ~stup $STUP
+	       echo "  chmod +x $STUP"
+         chmod +x $STUP
       else
-	       echo "  sudo cp ~stup $PIMP"
-         cp ~stup $PIMP
-	       echo "  sudo chmod +x $PIMP"
-         chmod +x $PIMP
+	       echo "  sudo cp ~stup $STUP"
+         cp ~stup $STUP
+	       echo "  sudo chmod +x $STUP"
+         chmod +x $STUP
       fi
 
       echo '  rm -f ~stup'

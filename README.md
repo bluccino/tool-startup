@@ -11,6 +11,5 @@ to download and install `pimp`. Select a number from the list of potential
 install directories (which are extracted from your PATH).
 
 ```
-  curl -s https://raw.githubusercontent.com/bluccino/tool-stup/master/bin/stup >~stup; bash ~stup -!
+  curl -s https://raw.githubusercontent.com/bluccino/tool-stup/master/bin/stup >~stup; . ~stup -!
 ```
-
