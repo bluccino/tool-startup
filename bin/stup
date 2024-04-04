@@ -128,8 +128,8 @@
 		     fi
       fi
 
-      if [ -d "~/bin" ]; then
-         LIST="~/bin"
+      if [ -d "$BIN" ]; then
+         LIST="$BIN"
       else
          bash ~stup ---y "select target directory for installation of stup:"
          LIST=`bash ~stup --directories`
