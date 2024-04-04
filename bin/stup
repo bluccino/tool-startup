@@ -55,8 +55,8 @@
 
    if [ "$*" == "--prompt" ]; then
       if [ "$_SOURCED" == 0 ]; then
-         stup ---r "bad command line: source stup $* (or: . stup $*)"
-         echo      "    this command is not allowed to run in sourced mode!"
+         stup ---r "bad command line: stup $*"
+         echo      "    this command must be sourced (. stup --prompt)!"
       fi
 
       export PS1="\[\e[35m\]\W\[\e[m\] $ "
