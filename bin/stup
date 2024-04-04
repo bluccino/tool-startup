@@ -44,7 +44,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0l"
+      echo "1.0.0m"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -273,6 +273,8 @@
       stup ---y 'sudo update-alternatives  --set python /usr/bin/python3.11'
       sudo update-alternatives  --set python /usr/bin/python3.11
 
+      stup ---y 'sudo apt install python3-pip'
+      sudo apt install python3-pip
       exit 0
    fi
 
