@@ -43,7 +43,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0i"
+      echo "1.0.0j"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -137,6 +137,24 @@
       sudo apt upgrade || exit 1
 
       exit 0
+   fi
+
+#===============================================================================
+# stup --git   # install git
+#===============================================================================
+
+   if [ "$*" == "--git" ]; then
+      ERR="0"
+      stup --is-ubuntu || ERR="1"   # only for ubuntu
+      if [ "$ERR" != "0" ]; then
+         stup ---r "error: stup $*"
+         echo      '       --git option is only allowed on ubuntu platforms'
+         exit 1
+      fi
+
+      stup ---g '=== install git ...'
+      stup ---y 'sudo apt install git'
+      sudo apt install git
    fi
 
 #===============================================================================
