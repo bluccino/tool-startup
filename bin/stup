@@ -313,7 +313,7 @@
          bash ~stup ---y "  sudo cp ~stup $BIN/stup"
          sudo cp ~stup $BIN/stup || exit 1
       fi
-      bash ~stup ---g "=== sucessful installation of stup"
+      bash ~stup ---g "=== successful installation of stup (version `bash stup --version`)"
       echo '  => enter: stup -?   # to see usage'
 
       rm -f ~stup                      # cleanup
