@@ -43,7 +43,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0e"
+      echo "1.0.0f"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -175,7 +175,7 @@
       echo "export TMP=~/tmp" >>$RC
       echo "export ETC=~/etc" >>$RC
       echo '' >>$RC
-      echo "export PATH=$BIN:$PATH" >>$RC
+      echo 'export PATH=$BIN:$PATH' >>$RC
       echo '' >>$RC
       echo "alias activate='source pimp --activate'" >>$RC
       echo "alias wd='source wd.sh'" >>$RC
