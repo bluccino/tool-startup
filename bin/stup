@@ -174,6 +174,7 @@
       echo "export BIN=~/bin" >>$RC
       echo "export TMP=~/tmp" >>$RC
       echo "export ETC=~/etc" >>$RC
+      echo "export GIT=~/Git" >>$RC
       echo '' >>$RC
       echo 'export PATH=$BIN:$PATH' >>$RC
       echo '' >>$RC
@@ -188,10 +189,23 @@
       echo 'if [ ! -d "$BIN" ]; then mkdir $BIN; fi' >>$RC
       echo 'if [ ! -d "$ETC" ]; then mkdir $ETC; fi' >>$RC
       echo 'if [ ! -d "$TMP" ]; then mkdir $TMP; fi' >>$RC
+      echo 'if [ ! -d "$GIT" ]; then mkdir $GIT; fi' >>$RC
 
-         # pimp .bashrc file (if not yet pimped)
+         # pimp bash profile/recource file (if not yet pimped)
 
       stup --is-ubuntu && BARC=~/.bashrc
+      stup --is-wsl && BARC=~/.bashrc
+      stup --is-macos && BARC=~/.bash_profile
+
+      if [ "$BARC" == "" ]; then
+         stup ---r "error: cannot identify bash profile/resource file for modification"
+         exit 1
+      fi
+
+         # pimp bash profile/recource file (if not yet pimped)
+
+      stup --is-ubuntu && BARC=~/.bashrc
+      stup --is-wsl && BARC=~/.bashrc
       stup --is-macos && BARC=~/.bash_profile
 
       if [ "$BARC" == "" ]; then
@@ -200,9 +214,10 @@
       fi
 
       PIMP="0"
-      cat ~/.bashrc | grep 'source $BIN/stuprc.sh' >/dev/null || PIMP="1"
+      cat $BARC | grep 'source $BIN/stuprc.sh' >/dev/null || PIMP="1"
       if [ "$PIMP" != "0" ]; then
          stup ---g "=== pimp $BARC with 'source ~/bin/stuprc.sh' ..."
+         echo '' >>$BARC
          echo 'source $BIN/stuprc.sh' >>$BARC
       fi
       exit 0
