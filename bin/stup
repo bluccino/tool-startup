@@ -81,7 +81,7 @@
 
       if [ "$_ERR" != "0" ]; then
          export PATH='~/bin':$PATH
-echo $PATH
+    echo $PATH
       fi
 
       bash ~stup ---!                 # self install
