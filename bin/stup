@@ -119,7 +119,7 @@
       fi
       chmod +x ~stup
 
-      if [ ! -d ~/bin ]; then
+      if [ ! -d "~/bin" ]; then
          bash ~stup ---c "missing ~/bin directory"
          read -p "shall I create a ~/bin directory [Y/n]?" ANS
 		     if [ "$ANS" == "Y" ] || [ "$ANS" == "y" ] || [ "$ANS" == "" ]; then
@@ -128,8 +128,8 @@
 		     fi
       fi
 
-      if [ -d '~/bin' ]; then
-         LIST='~/bin'
+      if [ -d "~/bin" ]; then
+         LIST="~/bin"
       else
          bash ~stup ---y "select target directory for installation of stup:"
          LIST=`bash ~stup --directories`
