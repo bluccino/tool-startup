@@ -43,7 +43,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0f"
+      echo "1.0.0g"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -191,11 +191,19 @@
 
          # pimp .bashrc file (if not yet pimped)
 
+      stup --is-ubuntu && BARC=~/.bashrc
+      stup --is-macos && BARC=~/.bash_profile
+
+      if [ "$BARC" == "" ]; then
+         stup ---r "error: cannot identify basg profile/resource file for modification"
+         exit 1
+      fi
+
       PIMP="0"
       cat ~/.bashrc | grep 'source $BIN/stuprc.sh' >/dev/null || PIMP="1"
       if [ "$PIMP" != "0" ]; then
-         stup ---g "=== pimp ~/.bashrc with 'source ~/bin/stuprc.sh' ..."
-         echo 'source $BIN/stuprc.sh' >>~/.bashrc
+         stup ---g "=== pimp $BARC with 'source ~/bin/stuprc.sh' ..."
+         echo 'source $BIN/stuprc.sh' >>$BARC
       fi
       exit 0
 
