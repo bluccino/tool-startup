@@ -194,6 +194,7 @@
       PIMP="0"
       cat ~/.bashrc | grep 'source $BIN/stuprc.sh' >/dev/null || PIMP="1"
       if [ "$PIMP" != "0" ]; then
+         stup ---g "=== pimp ~/.bashrc with 'source ~/bin/stuprc.sh' ..."
          echo 'source $BIN/stuprc.sh' >>~/.bashrc
       fi
       exit 0
