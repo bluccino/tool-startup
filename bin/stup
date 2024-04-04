@@ -87,6 +87,7 @@
          export PATH=$BIN:$PATH
       fi
 
+      source ~stup --prompt
       bash ~stup ---!                 # self install
 
       unset _ERR
