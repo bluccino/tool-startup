@@ -1,0 +1,33 @@
+#!/bin/bash
+# stup - startup standard bash working environment from scratch
+
+   if [ "$*" == "-?" ] || [ "$*" == "--help" ] || [ "$*" == "--?" ]; then
+      stup ---g "usage: startup standard bash working environment from scratch (version `startup --version`)"
+      echo  ''
+
+      if [ "$*" != "-?" ]; then
+         echo ''
+         ec -g 'define an alias:'
+         echo  "  alias wd='source wd.sh'  # consider to add to bash profile/resource script"
+         ec -g 'define label:'
+         echo  "  wd -! lab: 'abc project'  # define label for current directory"
+         echo  "  wd -! lab: 'abc project' <dir>  # define label for directory <dir>"
+         echo  "  wd -! pd:  'picolo develop repo' ~/Git/Picolo/picolo-develop"
+         echo  "  wd -! pl:  'picolo lessons' ~/Git/Picolo/picolo-develop/lessons"
+         echo  "  wd -! bin: 'local binary directory' ~/bin"
+         echo ''
+         ec -g 'environment variables:'
+         echo  '  WORKDIR:   path of current working directory'
+         echo  '  WORKIDB:   path of info database (storing label related info)'
+      fi
+      return 0 2>/dev/null || exit 0  # safe return/exit
+   fi
+
+#===============================================================================
+# stup --version (stup --v)  # print version
+#===============================================================================
+
+   if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
+      echo "1.0.0"
+      return 0 2>/dev/null || exit 0  # safe return/exit
+   fi
