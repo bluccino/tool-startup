@@ -45,7 +45,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0p"
+      echo "1.0.0q"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -273,14 +273,32 @@
       sudo apt install python3.11-venv
 
       stup ---g '=== setup python3.11 as python3 standard ...'
-      stup ---y 'sudo update-alternatives  --set python /usr/bin/python3.11'
+
+      PYTHON3=`which python3`
+      if [ "$PYTHON3" == "" ]; then
+         stup ---r "error: no existing python3 installation"
+         exit 1
+      fi
+
+      PYTHON3_11=`which python3.11`
+      if [ "$PYTHON3_11" == "" ]; then
+         stup ---r "error: no existing python3.11 installation"
+         exit 1
+      fi
+
+      stup ---y "rm $PYTHON3"
+      sudo rm $PYTHON3
+      stup ---y "ln $PYTHON3_11 $PYTHON3"
+      sudo ln $PYTHON3_11 $PYTHON3
+
+      #stup ---y 'sudo update-alternatives  --set python /usr/bin/python3.11'
       #sudo update-alternatives  --set python /usr/bin/python3.11
 
-      stup ---y 'sudo update-alternatives --install /usr/bin/python python3 /usr/bin/python3.11 1'
-      sudo update-alternatives --install /usr/bin/python python3 /usr/bin/python3.11 1
+      #stup ---y 'sudo update-alternatives --install /usr/bin/python python3 /usr/bin/python3.11 1'
+      #sudo update-alternatives --install /usr/bin/python python3 /usr/bin/python3.11 1
 
-      stup ---y 'sudo update-alternatives --config python3'
-      sudo update-alternatives --config python3
+      #stup ---y 'sudo update-alternatives --config python3'
+      #sudo update-alternatives --config python3
 
       stup ---g '=== installing pip ...'
       stup ---y 'sudo apt install python3-pip'
