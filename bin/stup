@@ -121,12 +121,12 @@
       chmod +x ~stup
 
       if [ ! -d "$BIN" ]; then
-         bash ~stup ---c "missing ~/bin directory"
-         read -p "shall I create a ~/bin directory [Y/n]?" ANS
-		     if [ "$ANS" == "Y" ] || [ "$ANS" == "y" ] || [ "$ANS" == "" ]; then
-            bash ~stup ---g "=== creating ~/bin"
-            mkdir $BIN
-		     fi
+         echo "missing ~/bin directory"
+         #read -p "shall I create a ~/bin directory [Y/n]?" ANS
+		     #if [ "$ANS" == "Y" ] || [ "$ANS" == "y" ] || [ "$ANS" == "" ]; then
+         bash ~stup ---g "=== creating ~/bin"
+         mkdir $BIN
+		     #fi
       fi
 
       if [ "$BIN" == "" ]; then  # quit
