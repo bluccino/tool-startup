@@ -179,15 +179,25 @@
       echo '' >>$RC
       echo "alias activate='source pimp --activate'" >>$RC
       echo "alias wd='source wd.sh'" >>$RC
+      echo '' >>$RC
       echo "export WORKIDB=$ETC" >>$RC
 
          # make sure that directories exist
 
+      echo '' >>$RC
       echo 'if [ ! -d "$BIN" ]; then mkdir $BIN; fi' >>$RC
       echo 'if [ ! -d "$ETC" ]; then mkdir $ETC; fi' >>$RC
       echo 'if [ ! -d "$TMP" ]; then mkdir $TMP; fi' >>$RC
 
+         # pimp .bashrc file (if not yet pimped)
+
+      PIMP="0"
+      cat ~/.bashrc | grep 'source $BIN/stuprc.sh' >/dev/null || PIMP="1"
+      if [ "$PIMP" != "0" ]; then
+         echo 'source $BIN/stuprc.sh' >>~/.bashrc
+      fi
       exit 0
+
    fi
 
 #===============================================================================
