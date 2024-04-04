@@ -43,7 +43,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0g"
+      echo "1.0.0h"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -190,6 +190,11 @@
       echo 'if [ ! -d "$ETC" ]; then mkdir $ETC; fi' >>$RC
       echo 'if [ ! -d "$TMP" ]; then mkdir $TMP; fi' >>$RC
       echo 'if [ ! -d "$GIT" ]; then mkdir $GIT; fi' >>$RC
+
+         # set prompt
+
+      echo '' >>$RC
+      echo 'source $BIN/prompt.sh' >>$RC
 
          # pimp bash profile/recource file (if not yet pimped)
 
