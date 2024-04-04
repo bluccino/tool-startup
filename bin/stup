@@ -25,6 +25,7 @@
       echo      '  stup --pimp           # install pimp'
       echo      '  stup --python         # install Python 3.11'
       echo      '  stup --rc             # install stuprc.sh'
+      echo      '  stup --tree           # install tree'
       echo      '  stup --vamos          # install vamos'
 
       if [ "$*" != "-?" ]; then  # comprehensive help
@@ -44,7 +45,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0n"
+      echo "1.0.0o"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -278,6 +279,26 @@
       stup ---g '=== installing pip ...'
       stup ---y 'sudo apt install python3-pip'
       sudo apt install python3-pip
+      exit 0
+   fi
+
+#===============================================================================
+# stup --tree   # install tree
+#===============================================================================
+
+   if [ "$*" == "--tree" ]; then
+      ERR="0"
+      stup --is-ubuntu || ERR="1"   # only for ubuntu
+      if [ "$ERR" != "0" ]; then
+         stup ---r "error: stup $*"
+         echo      '       --git option is only allowed on ubuntu platforms'
+         exit 1
+      fi
+
+      stup ---g '=== install tree ...'
+      stup ---y 'sudo apt install tree'
+      sudo apt install tree || exit 1
+
       exit 0
    fi
 
