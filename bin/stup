@@ -76,11 +76,15 @@
          return 1 2>/dev/null || exit 1  # safe return/exit
       fi
 
+      if [ "$BIN" == "" ]; then
+         export BIN=~/bin
+      fi
+
       _ERR="0"
-      echo $PATH | grep '~/bin:' >/dev/null || _ERR="1"
+      echo $PATH | grep "$BIN:" >/dev/null || _ERR="1"
 
       if [ "$_ERR" != "0" ]; then
-         export PATH='~/bin':$PATH
+         export PATH=$BIN:$PATH
       fi
 
       bash ~stup ---!                 # self install
