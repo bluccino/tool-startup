@@ -2,23 +2,30 @@
 # stup - startup standard bash working environment from scratch
 
    if [ "$*" == "-?" ] || [ "$*" == "--help" ] || [ "$*" == "--?" ]; then
-      stup ---g "usage: startup standard bash working environment from scratch (version `startup --version`)"
-      echo  ''
+      stup ---g "usage: startup standard bash working environment from scratch (version `stup --version`)"
+      stup ---c "targets:"
+      echo      '  1) directory creation of ~/bin, ~/etc, ~/tmp'
+      echo      '  2) installation of script ~/bin/prompt.sh'
+      echo      '  3) installation of script ~/bin/stuprc.sh'
+      echo      '  4) sourcing ~/bin/stuprc.sh from .bashrc'
+      echo      '  5) installation of curl'
+      echo      '  6) installation of git'
+      echo      '  7) installation of python 3.11'
+      echo      '  8) installation of pip'
+      echo      '  9) installation of pimp, ec, idb and wd'
+      stup ---c 'tasks of script ~/bin/stuprc.sh:'
+      echo      '  a) adding ~/bin at the beginning of $PATH'
+      echo      '  b) exporting BIN=~/bin, ETC=~/etc, TMP=~/tmp'
+      echo      '  c) exporting BLU=https://github.com/bluccino'
+      echo      '  d) providing alias wd and activate'
 
-      if [ "$*" != "-?" ]; then
-         echo ''
-         ec -g 'define an alias:'
-         echo  "  alias wd='source wd.sh'  # consider to add to bash profile/resource script"
-         ec -g 'define label:'
-         echo  "  wd -! lab: 'abc project'  # define label for current directory"
-         echo  "  wd -! lab: 'abc project' <dir>  # define label for directory <dir>"
-         echo  "  wd -! pd:  'picolo develop repo' ~/Git/Picolo/picolo-develop"
-         echo  "  wd -! pl:  'picolo lessons' ~/Git/Picolo/picolo-develop/lessons"
-         echo  "  wd -! bin: 'local binary directory' ~/bin"
-         echo ''
-         ec -g 'environment variables:'
-         echo  '  WORKDIR:   path of current working directory'
-         echo  '  WORKIDB:   path of info database (storing label related info)'
+      if [ "$*" != "-?" ]; then  # comprehensive help
+         stup ---g 'enhanced commands'
+         echo      '  bash ~stup -!      # install stup in a binary directory'
+         echo      '  . stup --prompt    # set standard prompt'
+         stup ---g 'environment variables:'
+         echo      '  WORKDIR:   path of current working directory'
+         echo      '  WORKIDB:   path of info database (storing label related info)'
       fi
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
@@ -31,3 +38,130 @@
       echo "1.0.0"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
+
+#-------------------------------------------------------------------------------
+#===============================================================================
+# examine whether this script is running in sourced/unsourced mode
+# - note: each dispatching clause needs to unset _SOURCED
+#===============================================================================
+#-------------------------------------------------------------------------------
+
+   (return 0 2>/dev/null) && _SOURCED=1 || _SOURCED=0  # determine _SOURCED
+
+#-------------------------------------------------------------------------------
+# . stup --prompt  # setup standard prompt
+#-------------------------------------------------------------------------------
+
+   if [ "$*" == "--prompt" ]; then
+      if [ "$_SOURCED" == 0 ]; then
+         stup ---r "bad command line: source stup $* (or: . stup $*)"
+         echo      "    this command is not allowed to run in sourced mode!"
+      fi
+
+      export PS1="\[\e[35m\]\W\[\e[m\] $ "
+      unset _SOURCED
+      return 0 2>/dev/null || exit 0  # safe return/exit
+   fi
+
+#-------------------------------------------------------------------------------
+#===============================================================================
+# after here only non sourced execution is allowed
+#===============================================================================
+#-------------------------------------------------------------------------------
+
+    if [ "$_SOURCED" != 0 ]; then
+        stup ---r "bad command line: source stup $* (or: . stup $*)"
+        echo      "    this command is not allowed to run in sourced mode!"
+        unset _SOURCED
+        return 1 2>/dev/null || exit 1  # safe return/exit
+    fi
+
+#===============================================================================
+# ~stup -!   # install in a system binary directory
+#===============================================================================
+
+   if [ "$*" == "-!" ]; then
+      if [ ! -f ~stup ]; then
+         bash ~stup ---r "error: stup -!" >&2
+         echo      "       file ~stup not found!" >&2
+         exit 1
+      fi
+      chmod +x ~stup
+
+      bash ~stup ---y "select target directory for installation of stup:"
+      LIST=`bash ~stup --directories`
+	    select DIR in $LIST
+	    do
+         if [ "$DIR" == "" ]; then  # quit
+            exit 0
+         fi
+         ERR="0"
+         touch $DIR/_junk_ >/dev/null || ERR="1"
+         rm -f $DIR/_junk_ >/dev/null
+
+         bash ~stup ---g "=== installing stup in $DIR ..."
+         if [ "$ERR" == "0" ]; then       # no write protection
+            bash ~stup ---y "  cp ~stup $DIR/stup"
+            cp ~stup $DIR/stup || exit 1
+         else                             # write protection
+            bash ~stup ---y "  this is a protected directory which uses a password!"
+            bash ~stup ---y "  sudo cp ~stup $DIR/stup"
+            sudo cp ~stup $DIR/stup || exit 1
+         fi
+         bash ~stup ---g "=== sucessful installation of stup"
+         echo '  => enter: stup -?   # to see usage'
+
+         rm -f ~stup                      # cleanup
+ 	       exit 0
+	    done
+      exit 0
+   fi
+
+#===============================================================================
+# stup ---directories   # generate list of install directories
+#===============================================================================
+
+   if [ "$*" == "--directories" ]; then
+      LIST=''
+      for CHUNK in $(echo "$PATH" | sed 's/:/ /g')
+      do
+         LIST="$LIST $CHUNK"
+      done
+      echo $LIST
+      exit 0
+   fi
+
+#===============================================================================
+# helper: stup ---r 'text arg'   # internal helper: echo in red color
+#         stup ---g 'text arg'   # internal helper: echo in green color
+#         stup ---y 'text arg'   # internal helper: echo in yellow color
+#===============================================================================
+
+   if [ "$1" == "---r" ]; then
+      printf "\x1b[31m";  shift;  echo "$*";  printf "\x1b[0m";  exit 0
+   fi
+
+   if [ "$1" == "---g" ]; then
+      printf "\x1b[32m";  shift;  echo "$*";  printf "\x1b[0m";  exit 0
+   fi
+
+   if [ "$1" == "---y" ]; then
+      printf "\x1b[33m";  shift;  echo "$*";  printf "\x1b[0m";  exit 0
+   fi
+
+   if [ "$1" == "---m" ]; then
+      printf "\x1b[35m";  shift;  echo "$*";  printf "\x1b[0m";  exit 0
+   fi
+
+   if [ "$1" == "---c" ]; then
+      printf "\x1b[36m";  shift;  echo "$*";  printf "\x1b[0m";  exit 0
+   fi
+
+#===============================================================================
+# cannot deal with anything else ...
+#===============================================================================
+
+   printf "\x1b[31m";
+   echo "bad command line: stup $*";  printf "\x1b[0m"
+   echo '             for help invoke: stup --help'
+   exit 1
