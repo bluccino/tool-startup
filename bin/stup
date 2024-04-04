@@ -183,9 +183,9 @@
 
          # make sure that directories exist
 
-      if [ ! -d "~/bin" ]; then mkdir ~/bin; fi
-      if [ ! -d "~/etc" ]; then mkdir ~/etc; fi
-      if [ ! -d "~/tmp" ]; then mkdir ~/tmp; fi
+      echo 'if [ ! -d "$BIN" ]; then mkdir $BIN; fi' >>$RC
+      echo 'if [ ! -d "$ETC" ]; then mkdir $ETC; fi' >>$RC
+      echo 'if [ ! -d "$TMP" ]; then mkdir $TMP; fi' >>$RC
 
       exit 0
    fi
