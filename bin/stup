@@ -119,46 +119,36 @@
       fi
       chmod +x ~stup
 
-      if [ ! -d "~/bin" ]; then
+      if [ ! -d "$BIN" ]; then
          bash ~stup ---c "missing ~/bin directory"
          read -p "shall I create a ~/bin directory [Y/n]?" ANS
 		     if [ "$ANS" == "Y" ] || [ "$ANS" == "y" ] || [ "$ANS" == "" ]; then
             bash ~stup ---g "=== creating ~/bin"
-            mkdir ~/bin
+            mkdir $BIN
 		     fi
       fi
 
-      if [ -d "$BIN" ]; then
-         LIST="$BIN"
-      else
-         bash ~stup ---y "select target directory for installation of stup:"
-         LIST=`bash ~stup --directories`
+      if [ "$BIN" == "" ]; then  # quit
+         exit 0
       fi
 
-	    select DIR in $LIST
-	    do
-         if [ "$DIR" == "" ]; then  # quit
-            exit 0
-         fi
-         ERR="0"
-         touch $DIR/_junk_ >/dev/null || ERR="1"
-         rm -f $DIR/_junk_ >/dev/null
+      ERR="0"
+      touch $BIN/_junk_ >/dev/null || ERR="1"
+      rm -f $BIN/_junk_ >/dev/null
 
-         bash ~stup ---g "=== installing stup in $DIR ..."
-         if [ "$ERR" == "0" ]; then       # no write protection
-            bash ~stup ---y "  cp ~stup $DIR/stup"
-            cp ~stup $DIR/stup || exit 1
-         else                             # write protection
-            bash ~stup ---y "  this is a protected directory which uses a password!"
-            bash ~stup ---y "  sudo cp ~stup $DIR/stup"
-            sudo cp ~stup $DIR/stup || exit 1
-         fi
-         bash ~stup ---g "=== sucessful installation of stup"
-         echo '  => enter: stup -?   # to see usage'
+      bash ~stup ---g "=== installing stup in $BIN ..."
+      if [ "$ERR" == "0" ]; then       # no write protection
+         bash ~stup ---y "  cp ~stup $BIN/stup"
+         cp ~stup $BIN/stup || exit 1
+      else                             # write protection
+         bash ~stup ---y "  this is a protected directory which uses a password!"
+         bash ~stup ---y "  sudo cp ~stup $BIN/stup"
+         sudo cp ~stup $BIN/stup || exit 1
+      fi
+      bash ~stup ---g "=== sucessful installation of stup"
+      echo '  => enter: stup -?   # to see usage'
 
-         rm -f ~stup                      # cleanup
- 	       exit 0
-	    done
+      rm -f ~stup                      # cleanup
       exit 0
    fi
 
