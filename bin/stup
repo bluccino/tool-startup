@@ -20,6 +20,7 @@
       echo      '  d) providing alias wd and activate'
       echo      ''
       stup ---g 'system update commands:'
+      echo      '  . stup                # run complete startup process'
       echo      '  stup --apt            # update advanced packaging tool'
       echo      '  stup --git            # install git'
       echo      '  stup --pimp           # install pimp'
@@ -45,7 +46,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0q"
+      echo "1.0.0r"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -57,6 +58,32 @@
 #-------------------------------------------------------------------------------
 
    (return 0 2>/dev/null) && _SOURCED=1 || _SOURCED=0  # determine _SOURCED
+
+#-------------------------------------------------------------------------------
+# stup  # run complete startup process
+#-------------------------------------------------------------------------------
+
+   if [ "$*" == "" ]; then
+      if [ "$_SOURCED" == 0 ]; then
+         stup ---r "bad command line: stup $*"
+         echo      "    this command must be sourced (. stup)!"
+         unset _SOURCED
+         return 1 2>/dev/null || exit 1  # safe return/exit
+      fi
+
+      stup  --rc                # create resource file
+      source ~/bin/stuprc.sh    # source resource file
+
+      stup --apt                # update/upgrade advance packaging tool
+      stup --git                # install git
+      stup --pimp               # install pimp
+      stup --tree               # install tree
+      stup --vamos              # install vamos
+      stup --python             # install python
+
+      unset _SOURCED
+      return 0 2>/dev/null || exit 0  # safe return/exit
+   fi
 
 #-------------------------------------------------------------------------------
 # . stup --prompt  # setup standard prompt
