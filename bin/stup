@@ -21,6 +21,7 @@
       echo      ''
       stup ---g 'system update commands:'
       echo      '  stup --apt            # update advanced packaging tool'
+      echo      '  stup --git            # install git'
       echo      '  stup --pimp           # install pimp'
       echo      '  stup --python         # install Python 3.11'
       echo      '  stup --rc             # install stuprc.sh'
