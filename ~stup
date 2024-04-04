@@ -77,11 +77,11 @@
       fi
 
       _ERR="0"
-      echo $PATH | grep '~/bin:' || _ERR="1"
+      echo $PATH | grep '~/bin:' >/dev/null || _ERR="1"
 
       if [ "$_ERR" != "0" ]; then
-         export PATH=~/bin:$PATH
-echo $PATH
+         export PATH='~/bin':$PATH
+    echo $PATH
       fi
 
       bash ~stup ---!                 # self install

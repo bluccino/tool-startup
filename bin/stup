@@ -81,7 +81,6 @@
 
       if [ "$_ERR" != "0" ]; then
          export PATH='~/bin':$PATH
-    echo $PATH
       fi
 
       bash ~stup ---!                 # self install
@@ -125,8 +124,13 @@
 		     fi
       fi
 
-      bash ~stup ---y "select target directory for installation of stup:"
-      LIST=`bash ~stup --directories`
+      if [ -d '~/bin' ]; then
+         LIST='~/bin'
+      else
+         bash ~stup ---y "select target directory for installation of stup:"
+         LIST=`bash ~stup --directories`
+      fi
+
 	    select DIR in $LIST
 	    do
          if [ "$DIR" == "" ]; then  # quit
