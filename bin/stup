@@ -116,6 +116,14 @@
 #===============================================================================
 
    if [ "$*" == "--apt" ]; then
+      ERR="0"
+      stup --is-ubuntu || ERR="1"   # only for ubuntu
+      if [ "$ERR" != "0" ]; then
+         stup ---r "error: stup $*"
+         echo      '       --apt option is only allowed on ubuntu platforms'
+         exit 1
+      fi
+
       stup ---g '=== downloads latest package informations ...'
       stup ---y 'sudo apt update'
       sudo apt update
@@ -219,6 +227,39 @@
       stup ---g "stup update complete (version `stup --version`)"
 	    exit 0
 	 fi
+
+#===============================================================================
+# stup --is-ubuntu
+#===============================================================================
+
+   if [ "$1" == "--is-ubuntu" ]; then
+      if [ -f "/etc/os-release" ]; then
+         exit 0   # running on ubuntu
+      fi
+      exit 1      # not on ubuntu
+   fi
+
+#===============================================================================
+# stup --is-macos
+#===============================================================================
+
+   if [ "$1" == "--is-macos" ]; then
+      if [ "$(uname)" == "Darwin" ]; then
+         exit 0   # running on MacOs Darwin
+      fi
+      exit 1      # not on MacOs
+   fi
+
+#===============================================================================
+# stup --is-wsl
+#===============================================================================
+
+   if [ "$1" == "--is-wsl" ]; then
+      if [ -d /dev/serial ]; then
+         exit 0   # running on Windows WSL
+      fi
+      exit 1      # not running on Windows WSL
+   fi
 
 #===============================================================================
 # helper: stup ---r 'text arg'   # internal helper: echo in red color
