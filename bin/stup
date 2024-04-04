@@ -18,6 +18,9 @@
       echo      '  b) exporting BIN=~/bin, ETC=~/etc, TMP=~/tmp'
       echo      '  c) exporting BLU=https://github.com/bluccino'
       echo      '  d) providing alias wd and activate'
+      echo      ''
+      stup ---g 'system update commands:'
+      echo      '  stup --apt            # update advanced packaging tool'
 
       if [ "$*" != "-?" ]; then  # comprehensive help
          stup ---g 'enhanced commands'
@@ -36,7 +39,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0"
+      echo "1.0.0a"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -107,6 +110,21 @@
         unset _SOURCED
         return 1 2>/dev/null || exit 1  # safe return/exit
     fi
+
+#===============================================================================
+# stup --apt   # update advanced packaging tool
+#===============================================================================
+
+   if [ "$*" == "--apt" ]; then
+      stup ---g '=== downloads latest package informations ...'
+      stup ---y 'sudo apt update'
+      sudo apt update
+
+      stup ---g '=== upgrade installed packages to latest versions ...'
+      stup ---y 'sudo apt upgrade'
+      sudo apt upgrade
+      exit 1
+   fi
 
 #===============================================================================
 # ~stup ---!   # install in a system binary directory
