@@ -22,6 +22,7 @@
       if [ "$*" != "-?" ]; then  # comprehensive help
          stup ---g 'enhanced commands'
          echo      '  bash ~stup -!      # install stup in a binary directory'
+         echo      '  stup --update      # stup version update'
          echo      '  . stup --prompt    # set standard prompt'
          stup ---g 'environment variables:'
          echo      '  WORKDIR:   path of current working directory'
@@ -130,6 +131,41 @@
       echo $LIST
       exit 0
    fi
+
+#===============================================================================
+# stup --update   # update current stup installation to latest version
+#===============================================================================
+
+	 if [ "$1" == "--update" ]; then
+	    URL=https://raw.githubusercontent.com/bluccino/tool-stup/master/bin/stup
+      PIMP=`which stup`
+
+	    stup ---g '=== updating stup ...'
+
+	    echo "  curl -s $URL >~stup"
+	    curl -s $URL >~stup
+
+      ERR="0"
+      rm -f $PIMP >/dev/null || ERR="1"
+
+      if [ "$ERR" == "0" ]; then
+	       echo "  cp ~stup $PIMP"
+         cp ~stup $PIMP
+	       echo "  chmod +x $PIMP"
+         chmod +x $PIMP
+      else
+	       echo "  sudo cp ~stup $PIMP"
+         cp ~stup $PIMP
+	       echo "  sudo chmod +x $PIMP"
+         chmod +x $PIMP
+      fi
+
+      echo '  rm -f ~stup'
+      rm -f ~stup
+
+      stup ---g "stup update complete (version `stup --version`)"
+	    exit 0
+	 fi
 
 #===============================================================================
 # helper: stup ---r 'text arg'   # internal helper: echo in red color
