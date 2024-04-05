@@ -349,6 +349,24 @@
    if [ "$*" == "---python-macos" ]; then
       stup ---g '=== installing python 3.11 for MacOS ...'
 
+      brew install python@3.11
+
+      PYTHON3=`which python3`
+      if [ "$PYTHON3" == "" ]; then
+         stup ---r "error: no existing python3 installation"
+         exit 1
+      fi
+
+      PYTHON3_11=`which python3.11`
+      if [ "$PYTHON3_11" == "" ]; then
+         stup ---r "error: no existing python3.11 installation"
+         exit 1
+      fi
+
+      stup ---y "rm $PYTHON3"
+      sudo rm $PYTHON3
+      stup ---y "ln $PYTHON3_11 $PYTHON3"
+      sudo ln $PYTHON3_11 $PYTHON3
 
       exit 1
    fi
