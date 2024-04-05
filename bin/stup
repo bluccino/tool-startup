@@ -481,6 +481,12 @@
       stup ---y "./setup.sh"
       ./setup.sh
 
+         # cleanup
+
+      cd ..
+      stup ---c "working now in: `pwd`"
+      rm $ZSDK
+
       exit 1
    fi
 
