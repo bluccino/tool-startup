@@ -5,7 +5,7 @@
 
    if [ "$*" == "-?" ] || [ "$*" == "--help" ] || [ "$*" == "--?" ]; then
       stup ---g "usage: startup standard bash working environment from scratch (version `stup --version`)"
-      echo      '  . stup                # create & source resource file ~/bin/stuprc.sh'
+      echo      '  . stup                # create & source resource file ~/bin/profile.sh'
       echo      '  stup                  # check system installation (same as stup --check)'
       echo      '  stup --apt            # update advanced packaging tool (on Linux)'
       echo      '  stup --brew           # update home brew stuff (on MacOS)'
@@ -14,7 +14,7 @@
       echo      '  stup --pip            # install pip (package installer for Python)'
       echo      '  stup --venv           # install venv (virtual Python environment)'
       echo      '  stup --python         # install Python 3.11'
-      echo      '  stup --rc             # install stuprc.sh'
+      echo      '  stup --rc             # install profile.sh'
       echo      '  stup --tree           # install tree'
       echo      '  stup --vamos          # install vamos'
       echo      '  stup --wd             # install ec, idb and wd'
@@ -24,14 +24,14 @@
          stup ---c "targets:"
          echo      '  1) directory creation of ~/bin, ~/etc, ~/tmp'
          echo      '  2) installation of script ~/bin/prompt.sh'
-         echo      '  3) installation of script ~/bin/stuprc.sh'
-         echo      '  4) sourcing ~/bin/stuprc.sh from .bashrc'
+         echo      '  3) installation of script ~/bin/profile.sh'
+         echo      '  4) sourcing ~/bin/profile.sh from .bashrc'
          echo      '  5) installation of curl'
          echo      '  6) installation of git'
          echo      '  7) installation of python 3.11'
          echo      '  8) installation of pip'
          echo      '  9) installation of pimp, ec, idb and wd'
-         stup ---c 'tasks of script ~/bin/stuprc.sh:'
+         stup ---c 'tasks of script ~/bin/profile.sh:'
          echo      '  a) adding ~/bin at the beginning of $PATH'
          echo      '  b) exporting BIN=~/bin, ETC=~/etc, TMP=~/tmp'
          echo      '  c) exporting BLU=https://github.com/bluccino'
@@ -54,7 +54,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0"
+      echo "1.0.0a"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -69,7 +69,7 @@
 
 #-------------------------------------------------------------------------------
 # stup     # check system requirements
-# . stup   # create & source resource file ~/bin/stuprc.sh
+# . stup   # create & source resource file ~/bin/profile.sh
 #-------------------------------------------------------------------------------
 
    if [ "$*" == "" ]; then
@@ -77,7 +77,7 @@
          stup --check || exit 1
       else
          stup  --rc                # create resource file
-         source ~/bin/stuprc.sh    # source resource file
+         source ~/bin/profile.sh    # source resource file
       fi
 
 
@@ -260,16 +260,16 @@
    fi
 
 #===============================================================================
-# stup --rc   # install stuprc.sh
+# stup --rc   # install profile.sh
 #===============================================================================
 
    if [ "$*" == "--rc" ]; then
-      stup ---g "=== install stuprc.sh ..."
+      stup ---g "=== install profile.sh ..."
 
-      RC="$BIN/stuprc.sh"
+      RC="$BIN/profile.sh"
 
       echo '#!/bin/bash' >$RC
-      echo '# stuprc.sh - startup resource file (always source!)' >>$RC
+      echo '# profile.sh - startup resource file (always source!)' >>$RC
       echo '' >>$RC
       echo "export BIN=~/bin" >>$RC
       echo "export TMP=~/tmp" >>$RC
@@ -320,11 +320,11 @@
       fi
 
       PIMP="0"
-      cat $BARC | grep "source $BIN/stuprc.sh" >/dev/null || PIMP="1"
+      cat $BARC | grep "source $BIN/profile.sh" >/dev/null || PIMP="1"
       if [ "$PIMP" != "0" ]; then
-         stup ---g "=== pimp $BARC with 'source $BIN/stuprc.sh' ..."
+         stup ---g "=== pimp $BARC with 'source $BIN/profile.sh' ..."
          echo '' >>$BARC
-         echo "source $BIN/stuprc.sh" >>$BARC
+         echo "source $BIN/profile.sh" >>$BARC
       fi
 
       exit 0
@@ -756,19 +756,19 @@ fi
    fi
 
 #===============================================================================
-# stup ---check-rc  # check ~/bin/stuprc.sh
+# stup ---check-rc  # check ~/bin/profile.sh
 #===============================================================================
 
    if [ "$*" == '---check-rc' ]; then
-      if [ -f "$BIN/stuprc.sh" ]; then
+      if [ -f "$BIN/profile.sh" ]; then
          printf '  '
          stup ---G 'OK'
-         echo ": resource file (~/bin/stuprc.sh)"
+         echo ": resource file (~/bin/profile.sh)"
          exit 0
       else
          printf '  '
          stup ---R 'FAIL'
-         echo ": resource file (~/bin/stuprc.sh) => fix with: stup --rc"
+         echo ": resource file (~/bin/profile.sh) => fix with: stup --rc"
          exit 1
       fi
       exit 0
