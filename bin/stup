@@ -382,7 +382,7 @@
 if [ "$*" == '--check' ]; then
     stup ---c 'checking system requirements ...'
     ERR=0
-    stup '---check-vamos'  || ERR=1
+    #stup '---check-vamos'  || ERR=1
     stup '---check-git'    || ERR=1
     stup '---check-python' || ERR=1
     stup '---check-pip'    || ERR=1
@@ -408,12 +408,12 @@ if [ "$*" == '---check-vamos' ]; then
     if [ "$ERR" == 0 ]; then
         printf '  '
         stup ---g 'OK'
-        echo ": playground managing tool (vamos)"
+        printf ": playground managing tool (vamos)"
         exit 0
     else
         printf '  '
         stup ---r 'FAIL'
-        echo ": playground managing tool (vamos) not available"
+        printf ": playground managing tool (vamos) not available"
         exit 1
     fi
 fi
@@ -429,12 +429,12 @@ if [ "$*" == '---check-git' ]; then
     if [ "$ERR" == 0 ]; then
         printf '  '
         stup ---g 'OK'
-        echo ": Git version managing tool (git)"
+        printf ": Git version managing tool (git)"
         exit 0
     else
         printf '  '
         stup ---r 'FAIL'
-        echo ": Git version managing tool (git) not available"
+        printf ": Git version managing tool (git) not available"
         exit 1
     fi
 fi
@@ -450,12 +450,12 @@ if [ "$*" == '---check-python' ]; then
     if [ "$OK" != "" ]; then
         printf '  '
         stup ---g 'OK'
-        echo ": Python version ($PYVERS)"
+        printf ": Python version ($PYVERS)"
         exit 0
     else
         printf '  '
         stup ---r 'FAIL'
-        echo ": Python version ($PYVERS) - must be >= Python 3.10.0"
+        printf ": Python version ($PYVERS) - must be >= Python 3.10.0"
         exit 1
     fi
 fi
@@ -471,12 +471,12 @@ if [ "$*" == '---check-pip' ]; then
     if [ "$ERR" == 0 ]; then
         printf '  '
         stup ---g 'OK'
-        echo ": Python package manager (pip)"
+        printf ": Python package manager (pip)"
         exit 0
     else
         printf '  '
         stup ---r 'FAIL'
-        echo ": Python package manager (pip) not available"
+        printf ": Python package manager (pip) not available"
         exit 1
     fi
 fi
@@ -492,12 +492,12 @@ if [ "$*" == '---check-venv' ]; then
     if [ "$ERR" == 0 ]; then
         printf '  '
         stup ---g 'OK'
-        echo ": virtual Python environments (venv)"
+        printf ": virtual Python environments (venv)"
         exit 0
     else
         printf '  '
         stup ---r 'FAIL'
-        echo ": virtual Python environments (venv) not available"
+        printf ": virtual Python environments (venv) not available"
         exit 1
     fi
 fi
