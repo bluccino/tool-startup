@@ -498,7 +498,7 @@ fi
    if [ "$*" == '---check-apt' ]; then
       ERR="0"
       stup --is-linux || ERR="1"   # only for Linux
-      if [ "$ERR" != "0" ]; then
+      if [ "$ERR" == "0" ]; then   # for linux ...
          NUMBER=`apt list --upgradable 2>/dev/null | wc -l`
          if [ "$NUMBER" == "1" ]; then
             printf '  '
