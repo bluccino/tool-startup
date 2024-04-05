@@ -455,7 +455,7 @@
 if [ "$*" == '--check' ]; then
     stup ---c 'checking system basic requirements ...'
     ERR=0
-    #stup '---check-vamos'  || ERR=1
+    stup '---check-apt'    || ERR=1
     stup '---check-git'    || ERR=1
     stup '---check-python' || ERR=1
     stup '---check-pip'    || ERR=1
@@ -490,6 +490,35 @@ if [ "$*" == '---check-vamos' ]; then
         exit 1
     fi
 fi
+
+#===============================================================================
+# stup ---check-apt  # check for new updates
+#===============================================================================
+
+   if [ "$*" == '---check-apt' ]; then
+      ERR="0"
+      stup --is-linux || ERR="1"   # only for Linux
+      if [ "$ERR" != "0" ]; then
+         NUMBER=`apt list --upgradable 2>/dev/null | wc -l`
+         if [ "$NUMBER" == "1" ]; then
+            printf '  '
+            stup ---G 'OK'
+            echo ": system updates"
+            exit 0
+         else
+            printf '  '
+            stup ---R 'FAIL'
+            echo ": new system updates available => fix with: stup --apt"
+            exit 1
+         fi
+         exit 0
+      fi
+
+      printf '  '
+      stup ---G 'OK'
+      echo ": system updates"
+      exit 0
+   fi
 
 #===============================================================================
 # check git availability
