@@ -336,6 +336,53 @@
    fi
 
 #===============================================================================
+# stup ---python-debian # install python3.11 on debian
+#===============================================================================
+
+   if [ "$*" == "---python-debian" ]; then
+      cd $TMP
+
+      sudo apt install wget build-essential libncursesw5-dev libssl-dev \
+         libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev zlib1g-dev
+
+      wget https://www.python.org/ftp/python/3.11.7/Python-3.11.7.tgz
+      tar xzf Python-3.11.7.tgz
+
+      cd Python-3.11.7
+      ./configure --enable-optimizations
+
+      stup ---< "make -j 4  # 4 cores"
+      make -j 4     # 4 cores
+      #make altinstall
+
+      stup ---y "sudo install -c python /usr/local/bin/python3.11"
+      sudo install -c python /usr/local/bin/python3.11
+
+      PYTHON3=`which python3`
+      if [ "$PYTHON3" == "" ]; then
+         stup ---r "error: no existing python3 installation"
+         exit 1
+      fi
+
+      PYTHON3_11=`which python3.11`
+      if [ "$PYTHON3_11" == "" ]; then
+         stup ---r "error: no existing python3.11 installation"
+         exit 1
+      fi
+
+      stup ---y "rm $PYTHON3"
+      sudo rm $PYTHON3
+      stup ---y "ln $PYTHON3_11 $PYTHON3"
+      sudo ln $PYTHON3_11 $PYTHON3
+
+         # cleanup
+
+      cd ..
+      rm -rf Python-3.11.7.tgz Python-3.11.7
+      exit 0
+   fi
+
+#===============================================================================
 # stup --venv   # install venv (virtual Python environment)
 #===============================================================================
 
