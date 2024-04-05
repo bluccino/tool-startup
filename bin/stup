@@ -453,7 +453,7 @@
 #===============================================================================
 
 if [ "$*" == '--check' ]; then
-    stup ---c 'checking system requirements ...'
+    stup ---c 'checking system basic requirements ...'
     ERR=0
     #stup '---check-vamos'  || ERR=1
     stup '---check-git'    || ERR=1
@@ -507,7 +507,7 @@ if [ "$*" == '---check-git' ]; then
     else
         printf '  '
         stup ---R 'FAIL'
-        echo ": Git version managing tool (git) not available"
+        echo ": Git version managing tool (git) missing => fix with: stup --git"
         exit 1
     fi
 fi
@@ -528,7 +528,7 @@ if [ "$*" == '---check-python' ]; then
     else
         printf '  '
         stup ---R 'FAIL'
-        echo ": Python version ($PYVERS) - must be >= Python 3.11.0"
+        echo ": Python version ($PYVERS) - must be >= Python 3.11.0 => fix with: stup --python"
         exit 1
     fi
 fi
@@ -549,7 +549,7 @@ if [ "$*" == '---check-pip' ]; then
     else
         printf '  '
         stup ---R 'FAIL'
-        echo ": Python package manager (pip) not available"
+        echo ": Python package manager (pip) not available => fix with: stup --pip"
         exit 1
     fi
 fi
@@ -570,7 +570,7 @@ if [ "$*" == '---check-venv' ]; then
     else
         printf '  '
         stup ---R 'FAIL'
-        echo ": virtual Python environments (venv) not available"
+        echo ": virtual Python environments (venv) not available => fix with: stup --venv"
         exit 1
     fi
 fi
