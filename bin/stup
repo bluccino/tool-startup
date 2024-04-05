@@ -12,7 +12,7 @@
       echo      '  stup --pimp           # install pimp'
       echo      '  stup --pip            # install pip (package installer for Python)'
       echo      '  stup --venv           # install venv (virtual Python environment)'
-      echo      '  stup --python         # install Python 3.10'
+      echo      '  stup --python         # install Python 3.11'
       echo      '  stup --rc             # install stuprc.sh'
       echo      '  stup --tree           # install tree'
       echo      '  stup --vamos          # install vamos'
@@ -26,7 +26,7 @@
          echo      '  4) sourcing ~/bin/stuprc.sh from .bashrc'
          echo      '  5) installation of curl'
          echo      '  6) installation of git'
-         echo      '  7) installation of python 3.10'
+         echo      '  7) installation of python 3.11'
          echo      '  8) installation of pip'
          echo      '  9) installation of pimp, ec, idb and wd'
          stup ---c 'tasks of script ~/bin/stuprc.sh:'
@@ -297,7 +297,7 @@
    fi
 
 #===============================================================================
-# stup --python   # upgrade to Python 3.10
+# stup --python   # upgrade to Python 3.11
 #===============================================================================
 
    if [ "$*" == "--python" ]; then
@@ -309,11 +309,11 @@
          exit 1
       fi
 
-      stup ---g '=== installing python 3.10 ...'
-      stup ---y 'sudo apt-get install python3.10'
-      sudo apt-get install python3.10 || exit 1
+      stup ---g '=== installing python 3.11 ...'
+      stup ---y 'sudo apt-get install python3.11'
+      sudo apt-get install python3.11 || exit 1
 
-      stup ---g '=== setup python3.10 as python3 standard ...'
+      stup ---g '=== setup python3.11 as python3 standard ...'
 
       PYTHON3=`which python3`
       if [ "$PYTHON3" == "" ]; then
@@ -321,16 +321,16 @@
          exit 1
       fi
 
-      PYTHON3_10=`which python3.10`
-      if [ "$PYTHON3_10" == "" ]; then
-         stup ---r "error: no existing python3.10 installation"
+      PYTHON3_11=`which python3.11`
+      if [ "$PYTHON3_11" == "" ]; then
+         stup ---r "error: no existing python3.11 installation"
          exit 1
       fi
 
       stup ---y "rm $PYTHON3"
       sudo rm $PYTHON3
-      stup ---y "ln $PYTHON3_10 $PYTHON3"
-      sudo ln $PYTHON3_10 $PYTHON3
+      stup ---y "ln $PYTHON3_11 $PYTHON3"
+      sudo ln $PYTHON3_11 $PYTHON3
 
       exit 0
    fi
@@ -348,15 +348,15 @@
          exit 1
       fi
 
-      stup ---g '=== installing venv for python 3.10 ...'
-      stup ---y 'apt install python3.10-venv'
-      sudo apt install python3.10-venv
+      stup ---g '=== installing venv for python 3.11 ...'
+      stup ---y 'apt install python3.11-venv'
+      sudo apt install python3.11-venv
 
       exit 0
    fi
 
 #===============================================================================
-# stup --pip   # install pip 3.10
+# stup --pip   # install pip 3.11
 #===============================================================================
 
    if [ "$*" == "--pip" ]; then
@@ -528,7 +528,7 @@ if [ "$*" == '---check-python' ]; then
     else
         printf '  '
         stup ---R 'FAIL'
-        echo ": Python version ($PYVERS) - must be >= Python 3.10.0"
+        echo ": Python version ($PYVERS) - must be >= Python 3.11.0"
         exit 1
     fi
 fi
