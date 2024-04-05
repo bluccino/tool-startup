@@ -13,3 +13,13 @@ to download and install `stup`. The `curl` formula will create a folder `~/bin`
 ```
   curl -s https://raw.githubusercontent.com/bluccino/tool-stup/master/bin/stup >~stup; . ~stup -!
 ```
+
+# Appendix
+
+## If CURL Is Not Installed
+
+On Debian and Ubuntu you can install `curl`as follows:
+
+```
+    sudo apt install curl
+```

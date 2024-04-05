@@ -1,35 +1,40 @@
 #!/bin/bash
 # stup - startup standard bash working environment from scratch
+# Copyright (c) 2024 Bluenetics GmbH
+# SPDX-License-Identifier: Apache-2.0
 
    if [ "$*" == "-?" ] || [ "$*" == "--help" ] || [ "$*" == "--?" ]; then
       stup ---g "usage: startup standard bash working environment from scratch (version `stup --version`)"
-      stup ---c "targets:"
-      echo      '  1) directory creation of ~/bin, ~/etc, ~/tmp'
-      echo      '  2) installation of script ~/bin/prompt.sh'
-      echo      '  3) installation of script ~/bin/stuprc.sh'
-      echo      '  4) sourcing ~/bin/stuprc.sh from .bashrc'
-      echo      '  5) installation of curl'
-      echo      '  6) installation of git'
-      echo      '  7) installation of python 3.11'
-      echo      '  8) installation of pip'
-      echo      '  9) installation of pimp, ec, idb and wd'
-      stup ---c 'tasks of script ~/bin/stuprc.sh:'
-      echo      '  a) adding ~/bin at the beginning of $PATH'
-      echo      '  b) exporting BIN=~/bin, ETC=~/etc, TMP=~/tmp'
-      echo      '  c) exporting BLU=https://github.com/bluccino'
-      echo      '  d) providing alias wd and activate'
-      echo      ''
-      stup ---g 'system update commands:'
-      echo      '  . stup                # run complete startup process'
+      echo      '  . stup                # create & source resource file ~/bin/stuprc.sh'
+      echo      '  stup                  # check system installation (same as stup --check)'
       echo      '  stup --apt            # update advanced packaging tool'
       echo      '  stup --git            # install git'
       echo      '  stup --pimp           # install pimp'
-      echo      '  stup --python         # install Python 3.11'
+      echo      '  stup --pip            # install pip (package installer for Python)'
+      echo      '  stup --venv           # install venv (virtual Python environment)'
+      echo      '  stup --python         # install Python 3.10'
       echo      '  stup --rc             # install stuprc.sh'
       echo      '  stup --tree           # install tree'
       echo      '  stup --vamos          # install vamos'
+      echo      '  stup --wd             # install ec, idb and wd'
 
       if [ "$*" != "-?" ]; then  # comprehensive help
+         stup ---c "targets:"
+         echo      '  1) directory creation of ~/bin, ~/etc, ~/tmp'
+         echo      '  2) installation of script ~/bin/prompt.sh'
+         echo      '  3) installation of script ~/bin/stuprc.sh'
+         echo      '  4) sourcing ~/bin/stuprc.sh from .bashrc'
+         echo      '  5) installation of curl'
+         echo      '  6) installation of git'
+         echo      '  7) installation of python 3.10'
+         echo      '  8) installation of pip'
+         echo      '  9) installation of pimp, ec, idb and wd'
+         stup ---c 'tasks of script ~/bin/stuprc.sh:'
+         echo      '  a) adding ~/bin at the beginning of $PATH'
+         echo      '  b) exporting BIN=~/bin, ETC=~/etc, TMP=~/tmp'
+         echo      '  c) exporting BLU=https://github.com/bluccino'
+         echo      '  d) providing alias wd and activate'
+         echo      ''
          stup ---g 'enhanced commands'
          echo      '  . bash ~stup -!    # install stup in a binary directory'
          echo      '  . stup --prompt    # set standard prompt'
@@ -47,7 +52,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0s"
+      echo "1.0.0u"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -61,26 +66,19 @@
    (return 0 2>/dev/null) && _SOURCED=1 || _SOURCED=0  # determine _SOURCED
 
 #-------------------------------------------------------------------------------
-# stup  # run complete startup process
+# stup     # check system requirements
+# . stup   # create & source resource file ~/bin/stuprc.sh
 #-------------------------------------------------------------------------------
 
    if [ "$*" == "" ]; then
       if [ "$_SOURCED" == 0 ]; then
-         stup ---r "bad command line: stup $*"
-         echo      "    this command must be sourced (. stup)!"
-         unset _SOURCED
-         return 1 2>/dev/null || exit 1  # safe return/exit
+         stup --check || exit 1
+      else
+         stup  --rc                # create resource file
+         source ~/bin/stuprc.sh    # source resource file
       fi
 
-      stup  --rc                # create resource file
-      source ~/bin/stuprc.sh    # source resource file
 
-      stup --apt                # update/upgrade advance packaging tool
-      stup --git                # install git
-      stup --pimp               # install pimp
-      stup --tree               # install tree
-      stup --vamos              # install vamos
-      stup --python             # install python
 
       unset _SOURCED
       return 0 2>/dev/null || exit 0  # safe return/exit
@@ -146,15 +144,33 @@
     fi
 
 #===============================================================================
+# stup --install   # install all tools
+#===============================================================================
+
+	 if [ "$*" == "--install" ]; then
+      stup --apt                # update/upgrade advance packaging tool
+      stup --git                # install git
+      stup --pimp               # install pimp
+      stup --tree               # install tree
+      stup --vamos              # install vamos
+      stup --python             # install python
+      stup --venv               # install venv
+      stup --pip                # install pip
+
+      stup --check
+      exit 0
+   fi
+
+#===============================================================================
 # stup --apt   # update advanced packaging tool
 #===============================================================================
 
    if [ "$*" == "--apt" ]; then
       ERR="0"
-      stup --is-ubuntu || ERR="1"   # only for ubuntu
+      stup --is-linux || ERR="1"   # only for Linux
       if [ "$ERR" != "0" ]; then
          stup ---r "error: stup $*"
-         echo      '       --apt option is only allowed on ubuntu platforms'
+         echo      '       --apt option is only allowed on Linux platforms'
          exit 1
       fi
 
@@ -175,10 +191,10 @@
 
    if [ "$*" == "--git" ]; then
       ERR="0"
-      stup --is-ubuntu || ERR="1"   # only for ubuntu
+      stup --is-linux || ERR="1"   # only for Linux
       if [ "$ERR" != "0" ]; then
          stup ---r "error: stup $*"
-         echo      '       --git option is only allowed on ubuntu platforms'
+         echo      '       --git option is only allowed on Linux platforms'
          exit 1
       fi
 
@@ -225,7 +241,7 @@
       echo "export TMP=~/tmp" >>$RC
       echo "export ETC=~/etc" >>$RC
       echo "export GIT=~/Git" >>$RC
-      echo "export BLU=https://gitbub.com/bluccino" >>$RC
+      echo "export BLU=https://github.com/bluccino" >>$RC
       echo '' >>$RC
       echo 'export PATH=$BIN:$PATH' >>$RC
       echo '' >>$RC
@@ -249,7 +265,7 @@
 
          # pimp bash profile/recource file (if not yet pimped)
 
-      stup --is-ubuntu && BARC=~/.bashrc
+      stup --is-linux && BARC=~/.bashrc
       stup --is-wsl && BARC=~/.bashrc
       stup --is-macos && BARC=~/.bash_profile
 
@@ -260,7 +276,7 @@
 
          # pimp bash profile/recource file (if not yet pimped)
 
-      stup --is-ubuntu && BARC=~/.bashrc
+      stup --is-linux && BARC=~/.bashrc
       stup --is-wsl && BARC=~/.bashrc
       stup --is-macos && BARC=~/.bash_profile
 
@@ -270,38 +286,34 @@
       fi
 
       PIMP="0"
-      cat $BARC | grep "source ~/bin/stuprc.sh" >/dev/null || PIMP="1"
+      cat $BARC | grep "source $BIN/stuprc.sh" >/dev/null || PIMP="1"
       if [ "$PIMP" != "0" ]; then
-         stup ---g "=== pimp $BARC with 'source ~/bin/stuprc.sh' ..."
+         stup ---g "=== pimp $BARC with 'source $BIN/stuprc.sh' ..."
          echo '' >>$BARC
-         echo "source ~/bin/stuprc.sh" >>$BARC
+         echo "source $BIN/stuprc.sh" >>$BARC
       fi
 
       exit 0
    fi
 
 #===============================================================================
-# stup --python   # upgrade to Python 3.11
+# stup --python   # upgrade to Python 3.10
 #===============================================================================
 
    if [ "$*" == "--python" ]; then
       ERR="0"
-      stup --is-ubuntu || ERR="1"   # only for ubuntu
+      stup --is-linux || ERR="1"   # only for Linux
       if [ "$ERR" != "0" ]; then
          stup ---r "error: stup $*"
-         echo      '       --python option is only implemented for ubuntu platforms'
+         echo      '       --python option is only implemented for Linux platforms'
          exit 1
       fi
 
-      stup ---g '=== installing python 3.11 ...'
-      stup ---y 'sudo apt-get install python3.11'
-      sudo apt-get install python3.11 || exit 1
+      stup ---g '=== installing python 3.10 ...'
+      stup ---y 'sudo apt-get install python3.10'
+      sudo apt-get install python3.10 || exit 1
 
-      stup ---g '=== installing venv ...'
-      stup ---y 'apt install python3.11-venv'
-      sudo apt install python3.11-venv
-
-      stup ---g '=== setup python3.11 as python3 standard ...'
+      stup ---g '=== setup python3.10 as python3 standard ...'
 
       PYTHON3=`which python3`
       if [ "$PYTHON3" == "" ]; then
@@ -309,27 +321,54 @@
          exit 1
       fi
 
-      PYTHON3_11=`which python3.11`
-      if [ "$PYTHON3_11" == "" ]; then
-         stup ---r "error: no existing python3.11 installation"
+      PYTHON3_10=`which python3.10`
+      if [ "$PYTHON3_10" == "" ]; then
+         stup ---r "error: no existing python3.10 installation"
          exit 1
       fi
 
       stup ---y "rm $PYTHON3"
       sudo rm $PYTHON3
-      stup ---y "ln $PYTHON3_11 $PYTHON3"
-      sudo ln $PYTHON3_11 $PYTHON3
+      stup ---y "ln $PYTHON3_10 $PYTHON3"
+      sudo ln $PYTHON3_10 $PYTHON3
 
-      #stup ---y 'sudo update-alternatives  --set python /usr/bin/python3.11'
-      #sudo update-alternatives  --set python /usr/bin/python3.11
+      exit 0
+   fi
 
-      #stup ---y 'sudo update-alternatives --install /usr/bin/python python3 /usr/bin/python3.11 1'
-      #sudo update-alternatives --install /usr/bin/python python3 /usr/bin/python3.11 1
+#===============================================================================
+# stup --venv   # install venv (virtual Python environment)
+#===============================================================================
 
-      #stup ---y 'sudo update-alternatives --config python3'
-      #sudo update-alternatives --config python3
+   if [ "$*" == "--venv" ]; then
+      ERR="0"
+      stup --is-linux || ERR="1"   # only for Linux
+      if [ "$ERR" != "0" ]; then
+         stup ---r "error: stup $*"
+         echo      '       --venv option is only implemented for linux platforms'
+         exit 1
+      fi
 
-      stup ---g '=== installing pip ...'
+      stup ---g '=== installing venv for python 3.10 ...'
+      stup ---y 'apt install python3.10-venv'
+      sudo apt install python3.10-venv
+
+      exit 0
+   fi
+
+#===============================================================================
+# stup --pip   # install pip 3.10
+#===============================================================================
+
+   if [ "$*" == "--pip" ]; then
+      ERR="0"
+      stup --is-linux || ERR="1"   # only for Linux
+      if [ "$ERR" != "0" ]; then
+         stup ---r "error: stup $*"
+         echo      '       --pip option is only implemented for Linux platforms'
+         exit 1
+      fi
+
+      stup ---g '=== installing pip for python3 ...'
       stup ---y 'sudo apt install python3-pip'
       sudo apt install python3-pip
       exit 0
@@ -341,10 +380,10 @@
 
    if [ "$*" == "--tree" ]; then
       ERR="0"
-      stup --is-ubuntu || ERR="1"   # only for ubuntu
+      stup --is-linux || ERR="1"   # only for Linux
       if [ "$ERR" != "0" ]; then
          stup ---r "error: stup $*"
-         echo      '       --git option is only allowed on ubuntu platforms'
+         echo      '       --git option is only allowed on Linux platforms'
          exit 1
       fi
 
@@ -371,6 +410,40 @@
 
       stup ---y "chmod +x $BIN/vamos"
       sudo chmod +x $BIN/vamos
+
+      exit 0
+   fi
+
+#===============================================================================
+#stup --wd  # install ec, idb and wd'
+#===============================================================================
+
+   if [ "$*" == "--wd" ]; then
+      stup ---g '=== install ec, idb and wd ...'
+
+      BLUCCINO=https://raw.githubusercontent.com/bluccino
+
+      REPO=tool-ec
+      URL="$BLUCCINO/$REPO/master"
+
+      stup ---y "curl -s $URL/bin/ec >$BIN/ec"
+      sudo curl -s $URL/bin/ec >$BIN/ec
+      stup ---y "chmod +x $BIN/ec"
+      sudo chmod +x $BIN/ec
+
+      REPO=tool-idb
+      URL="$BLUCCINO/$REPO/master"
+
+      stup ---y "curl -s $URL/bin/idb >$BIN/idb"
+      sudo curl -s $URL/bin/idb >$BIN/idb
+      stup ---y "chmod +x $BIN/idb"
+      sudo chmod +x $BIN/idb
+
+      REPO=tool-wd
+      URL="$BLUCCINO/$REPO/master"
+
+      stup ---y "curl -s $URL/bin/wd.sh >$BIN/wd.sh"
+      sudo curl -s $URL/bin/wd.sh >$BIN/wd.sh
 
       exit 0
    fi
@@ -597,14 +670,14 @@ fi
 	 fi
 
 #===============================================================================
-# stup --is-ubuntu
+# stup --is-linux
 #===============================================================================
 
-   if [ "$1" == "--is-ubuntu" ]; then
+   if [ "$1" == "--is-linux" ]; then
       if [ -f "/etc/os-release" ]; then
-         exit 0   # running on ubuntu
+         exit 0   # running on Linux
       fi
-      exit 1      # not on ubuntu
+      exit 1      # not on Linux
    fi
 
 #===============================================================================
