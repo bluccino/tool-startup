@@ -456,6 +456,7 @@ if [ "$*" == '--check' ]; then
     stup ---c 'checking system basic requirements ...'
     ERR=0
     stup '---check-apt'    || ERR=1
+    stup '---check-rc'     || ERR=1
     stup '---check-git'    || ERR=1
     stup '---check-python' || ERR=1
     stup '---check-pip'    || ERR=1
@@ -517,6 +518,25 @@ fi
       printf '  '
       stup ---G 'OK'
       echo ": system updates"
+      exit 0
+   fi
+
+#===============================================================================
+# stup ---check-rc  # check ~/bin/stuprc.sh
+#===============================================================================
+
+   if [ "$*" == '---check-rc' ]; then
+      if [ -f "$BIN/stuprc.sh" ]; then
+         printf '  '
+         stup ---G 'OK'
+         echo ": resource file (~/bin/stuprc.sh)"
+         exit 0
+      else
+         printf '  '
+         stup ---R 'FAIL'
+         echo ": resource file (~/bin/stuprc.sh) => fix with: stup --rc"
+         exit 1
+      fi
       exit 0
    fi
 
