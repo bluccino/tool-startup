@@ -32,8 +32,9 @@
       if [ "$*" != "-?" ]; then  # comprehensive help
          stup ---g 'enhanced commands'
          echo      '  . bash ~stup -!    # install stup in a binary directory'
-         echo      '  stup --update      # stup version update'
          echo      '  . stup --prompt    # set standard prompt'
+         echo      '  stup --check       # check installation'
+         echo      '  stup --update      # stup version update'
          stup ---g 'environment variables:'
          echo      '  WORKDIR:   path of current working directory'
          echo      '  WORKIDB:   path of info database (storing label related info)'
@@ -46,7 +47,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0r"
+      echo "1.0.0s"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -224,6 +225,7 @@
       echo "export TMP=~/tmp" >>$RC
       echo "export ETC=~/etc" >>$RC
       echo "export GIT=~/Git" >>$RC
+      echo "export BLU=https://gitbub.com/bluccino" >>$RC
       echo '' >>$RC
       echo 'export PATH=$BIN:$PATH' >>$RC
       echo '' >>$RC
@@ -372,6 +374,133 @@
 
       exit 0
    fi
+
+#===============================================================================
+# check system OS requirements
+#===============================================================================
+
+if [ "$*" == '--check' ]; then
+    stup ---c 'checking system requirements ...'
+    ERR=0
+    stup '---check-vamos'  || ERR=1
+    stup '---check-git'    || ERR=1
+    stup '---check-python' || ERR=1
+    stup '---check-pip'    || ERR=1
+    stup '---check-venv'   || ERR=1
+
+    if [ "$ERR" != 0 ]; then
+        stup ---r "error: failing system requirements"
+        #echo " => fix with '"
+        #stup ---g "vamos --fix"
+        #echo "'"
+        exit 1
+    fi
+    exit 0
+fi
+
+#===============================================================================
+# check vamos availability
+#===============================================================================
+
+if [ "$*" == '---check-vamos' ]; then
+    ERR=0
+
+    if [ "$ERR" == 0 ]; then
+        printf '  '
+        stup ---g 'OK'
+        echo ": playground managing tool (vamos)"
+        exit 0
+    else
+        printf '  '
+        stup ---r 'FAIL'
+        echo ": playground managing tool (vamos) not available"
+        exit 1
+    fi
+fi
+
+#===============================================================================
+# check git availability
+#===============================================================================
+
+if [ "$*" == '---check-git' ]; then
+    ERR=0
+    git --version >/dev/null 2>/dev/null || ERR=1
+
+    if [ "$ERR" == 0 ]; then
+        printf '  '
+        stup ---g 'OK'
+        echo ": Git version managing tool (git)"
+        exit 0
+    else
+        printf '  '
+        stup ---r 'FAIL'
+        echo ": Git version managing tool (git) not available"
+        exit 1
+    fi
+fi
+
+#===============================================================================
+# check Python version
+#===============================================================================
+
+if [ "$*" == '---check-python' ]; then
+    PYVERS=`python3 --version`
+    OK=`echo $PYVERS | grep 'Python 3.1'`
+
+    if [ "$OK" != "" ]; then
+        printf '  '
+        stup ---g 'OK'
+        echo ": Python version ($PYVERS)"
+        exit 0
+    else
+        printf '  '
+        stup ---r 'FAIL'
+        echo ": Python version ($PYVERS) - must be >= Python 3.10.0"
+        exit 1
+    fi
+fi
+
+#===============================================================================
+# check pip availability
+#===============================================================================
+
+if [ "$*" == '---check-pip' ]; then
+    ERR=0
+    pip --version >/dev/null 2>/dev/null || ERR=1
+
+    if [ "$ERR" == 0 ]; then
+        printf '  '
+        stup ---g 'OK'
+        echo ": Python package manager (pip)"
+        exit 0
+    else
+        printf '  '
+        stup ---r 'FAIL'
+        echo ": Python package manager (pip) not available"
+        exit 1
+    fi
+fi
+
+#===============================================================================
+# check venv availability
+#===============================================================================
+
+if [ "$*" == '---check-venv' ]; then
+    ERR=0
+    python3 -m venv -h >/dev/null 2>/dev/null || ERR=1
+
+    if [ "$ERR" == 0 ]; then
+        printf '  '
+        stup ---g 'OK'
+        echo ": virtual Python environments (venv)"
+        exit 0
+    else
+        printf '  '
+        stup ---r 'FAIL'
+        echo ": virtual Python environments (venv) not available"
+        exit 1
+    fi
+fi
 
 #===============================================================================
 # ~stup ---!   # install in a system binary directory
