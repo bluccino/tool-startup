@@ -540,7 +540,7 @@
 #===============================================================================
 
 if [ "$*" == '--check' ]; then
-    stup ---c 'checking system basic requirements ...'
+    stup ---c 'checking basic system requirements ...'
     ERR=0
     stup '---check-apt'    || ERR=1
     stup '---check-rc'     || ERR=1
