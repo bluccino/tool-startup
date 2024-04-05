@@ -400,15 +400,40 @@
 #===============================================================================
 
    if [ "$*" == "--venv" ]; then
-      ERR="0"
-      stup --is-linux || ERR="1"   # only for Linux
-      if [ "$ERR" != "0" ]; then
-         stup ---r "error: stup $*"
-         echo      '       --venv option is only implemented for linux platforms'
-         exit 1
-      fi
+      stup --is-macos  && stup ---venv-macos
+      stup --is-ubuntu && stup ---venv-ubuntu
+      stup --is-debian && stup ---venv-debian
+      exit 0
+   fi
 
-      stup ---g '=== installing venv for python 3.11 ...'
+#===============================================================================
+# stup ---venv-macos  # install python3.11 on MacOS
+#===============================================================================
+
+   if [ "$*" == "---venv-macos" ]; then
+      stup ---r "error: stup $*"
+      echo      '       --venv option is only implemented for Linux platforms'
+      exit 1
+   fi
+
+#===============================================================================
+# stup ---venv-ubuntu   # install venv (virtual Python environment) for Ubuntu
+#===============================================================================
+
+   if [ "$*" == "---venv-ubuntu" ]; then
+      stup ---g '=== installing venv for python 3.11 on ubuntu ...'
+      stup ---y 'apt install python3.11-venv'
+      sudo apt install python3.11-venv
+
+      exit 0
+   fi
+
+#===============================================================================
+# stup ---venv-debian   # install venv (virtual Python environment) for Debian
+#===============================================================================
+
+   if [ "$*" == "---venv-debian" ]; then
+      stup ---g '=== installing venv for python 3.11 on debian ...'
       stup ---y 'apt install python3.11-venv'
       sudo apt install python3.11-venv
 
@@ -519,6 +544,7 @@ if [ "$*" == '--check' ]; then
     ERR=0
     stup '---check-apt'    || ERR=1
     stup '---check-rc'     || ERR=1
+    stup '---check-pimp'   || ERR=1
     stup '---check-git'    || ERR=1
     stup '---check-python' || ERR=1
     stup '---check-pip'    || ERR=1
@@ -540,6 +566,7 @@ fi
 
 if [ "$*" == '---check-vamos' ]; then
     ERR=0
+    if [ "`which vamos`" == "" ]; then ERR=1; fi
 
     if [ "$ERR" == 0 ]; then
         printf '  '
@@ -549,7 +576,28 @@ if [ "$*" == '---check-vamos' ]; then
     else
         printf '  '
         stup ---R 'FAIL'
-        echo ": playground managing tool (vamos) not available"
+        echo ": playground managing tool (vamos) not available => fix: stup --vamos"
+        exit 1
+    fi
+fi
+
+#===============================================================================
+# check pimp availability
+#===============================================================================
+
+if [ "$*" == '---check-pimp' ]; then
+    ERR=0
+    if [ "`which pimp`" == "" ]; then ERR=1; fi
+
+    if [ "$ERR" == 0 ]; then
+        printf '  '
+        stup ---G 'OK'
+        echo ": pimping tool (pimp)"
+        exit 0
+    else
+        printf '  '
+        stup ---R 'FAIL'
+        echo ": pimping tool (pimp) not available => fix: stup --pimp"
         exit 1
     fi
 fi
