@@ -7,7 +7,8 @@
       stup ---g "usage: startup standard bash working environment from scratch (version `stup --version`)"
       echo      '  . stup                # create & source resource file ~/bin/stuprc.sh'
       echo      '  stup                  # check system installation (same as stup --check)'
-      echo      '  stup --apt            # update advanced packaging tool'
+      echo      '  stup --apt            # update advanced packaging tool (on Linux)'
+      echo      '  stup --brew           # update home brew stuff (on MacOS)'
       echo      '  stup --git            # install git'
       echo      '  stup --pimp           # install pimp'
       echo      '  stup --pip            # install pip (package installer for Python)'
@@ -182,6 +183,38 @@
       stup ---g '=== upgrade installed packages to latest versions ...'
       stup ---y 'sudo apt upgrade'
       sudo apt upgrade || exit 1
+
+      exit 0
+   fi
+
+#===============================================================================
+# stup --brew   # update homebrew stuff (on MacOS)
+#===============================================================================
+
+   if [ "$*" == "--brew" ]; then
+      ERR="0"
+      stup --is-macos || ERR="1"   # only for MacOS
+      if [ "$ERR" != "0" ]; then
+         stup ---r "error: stup $*"
+         echo      '       --brew option is only allowed on MacOS platforms'
+         exit 1
+      fi
+
+      URL=https://raw.githubusercontent.com/Homebrew/install
+
+      stup ---y 'bash -c "$(curl -fsSL '$URL'/HEAD/install.sh)"'
+      bash -c "$(curl -fsSL $URL/HEAD/install.sh)"
+
+      (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') > ~/.zprofile
+
+      stup ---y 'source ~/.zprofile'
+      source ~/.zprofile
+
+      stup ---y "brew install cmake ninja gperf python3 ccache qemu dtc libmagic wget"
+      brew install cmake ninja gperf python3 ccache qemu dtc libmagic wget
+
+      (echo; echo 'export PATH="'$(brew --prefix)'/opt/python/libexec/bin:$PATH"') >> ~/.zprofile
+      source ~/.zprofile
 
       exit 0
    fi
@@ -412,6 +445,8 @@
 #===============================================================================
 
    if [ "$*" == "---zsdk-macos" ]; then
+      stup ---g "=== installing Zephyr SDK on MacOS ..."
+
       if [ ! -d "/opt" ]; then
          stup ---y "sudo mkdir /opt"
          sudo mkdir /opt || exit 1
@@ -425,6 +460,7 @@
 
       stup ---y "cd /opt/zephyr"
       cd /opt/zephyr
+      stup ---c "working now in: `pwd`"
 
       URL=https://github.com/zephyrproject-rtos/sdk-ng/releases/download
       ZSDK=zephyr-sdk-0.16.5-1_macos-aarch64.tar.xz
@@ -435,8 +471,12 @@
       stup ---y "curl -L $URL/v0.16.5-1/sha256.sum | shasum --check --ignore-missing"
       curl -L $URL/v0.16.5-1/sha256.sum | shasum --check --ignore-missing
 
+      stup ---y "tar xvf $ZSDK"
+      tar xvf $ZSDK
+
       stup ---y "cd zephyr-sdk-0.16.5-1"
       cd zephyr-sdk-0.16.5-1
+      stup ---c "working now in: `pwd`"
 
       stup ---y "./setup.sh"
       ./setup.sh
@@ -449,6 +489,7 @@
 #===============================================================================
 
    if [ "$*" == "---zsdk-ubuntu" ]; then
+      stup ---g "=== installing Zephyr SDK on Ubuntu ..."
       stup ---r "error: stup $*"
       echo      '       --zsdk option is not supported on Ubuntu'
       exit 1
@@ -459,6 +500,7 @@
 #===============================================================================
 
    if [ "$*" == "---zsdk-debian" ]; then
+      stup ---g "=== installing Zephyr SDK on Debian ..."
       stup ---r "error: stup $*"
       echo      '       --zsdk option is not supported on Debian'
       exit 1
