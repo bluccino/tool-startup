@@ -301,15 +301,28 @@
 #===============================================================================
 
    if [ "$*" == "--python" ]; then
-      ERR="0"
-      stup --is-linux || ERR="1"   # only for Linux
-      if [ "$ERR" != "0" ]; then
-         stup ---r "error: stup $*"
-         echo      '       --python option is only implemented for Linux platforms'
-         exit 1
-      fi
+      stup --is-macos  && stup ---python-macos
+      stup --is-ubuntu && stup ---python-ubuntu
+      stup --is-debian && stup ---python-debian
+      exit 0
+   fi
 
-      stup ---g '=== installing python 3.11 ...'
+#===============================================================================
+# stup ---python-macos  # install python3.11 on MacOS
+#===============================================================================
+
+   if [ "$*" == "---python-macos" ]; then
+      stup ---r "error: stup $*"
+      echo      '       --python option is only implemented for Linux platforms'
+      exit 1
+   fi
+
+#===============================================================================
+# stup ---python-debian # install python3.11 on debian
+#===============================================================================
+
+   if [ "$*" == "---python-ubuntu" ]; then
+      stup ---g '=== installing python 3.11 for ubuntu ...'
       stup ---y 'sudo apt-get install python3.11'
       sudo apt-get install python3.11 || exit 1
 
@@ -776,6 +789,28 @@ fi
    if [ "$1" == "--is-linux" ]; then
       if [ -f "/etc/os-release" ]; then
          exit 0   # running on Linux
+      fi
+      exit 1      # not on Linux
+   fi
+
+#===============================================================================
+# stup --is-ubuntu
+#===============================================================================
+
+   if [ "$1" == "--is-ubuntu" ]; then
+      if [ -f "/etc/os-release" ]; then
+         cat /etc/os-release | grep Ubuntu >/dev/null && exit 0
+      fi
+      exit 1      # not on Linux
+   fi
+
+#===============================================================================
+# stup --is-debian
+#===============================================================================
+
+   if [ "$1" == "--is-debian" ]; then
+      if [ -f "/etc/os-release" ]; then
+         cat /etc/os-release | grep Debian >/dev/null && exit 0
       fi
       exit 1      # not on Linux
    fi
