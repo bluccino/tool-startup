@@ -277,6 +277,7 @@
       echo "export GIT=~/Git" >>$RC
       echo "export BLU=https://github.com/bluccino" >>$RC
       echo '' >>$RC
+      stup --is-macos && echo 'export PATH=/opt/homebrew/bin:$PATH' >>$RC
       echo 'export PATH=$BIN:$PATH' >>$RC
       echo '' >>$RC
       echo "alias activate='source pimp --activate'" >>$RC
@@ -346,8 +347,9 @@
 #===============================================================================
 
    if [ "$*" == "---python-macos" ]; then
-      stup ---r "error: stup $*"
-      echo      '       --python option is only implemented for Linux platforms'
+      stup ---g '=== installing python 3.11 for MacOS ...'
+
+
       exit 1
    fi
 
