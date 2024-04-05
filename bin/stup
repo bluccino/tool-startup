@@ -407,13 +407,13 @@ if [ "$*" == '---check-vamos' ]; then
 
     if [ "$ERR" == 0 ]; then
         printf '  '
-        stup ---g 'OK'
-        printf ": playground managing tool (vamos)"
+        stup ---G 'OK'
+        echo ": playground managing tool (vamos)"
         exit 0
     else
         printf '  '
-        stup ---r 'FAIL'
-        printf ": playground managing tool (vamos) not available"
+        stup ---R 'FAIL'
+        echo ": playground managing tool (vamos) not available"
         exit 1
     fi
 fi
@@ -428,13 +428,13 @@ if [ "$*" == '---check-git' ]; then
 
     if [ "$ERR" == 0 ]; then
         printf '  '
-        stup ---g 'OK'
-        printf ": Git version managing tool (git)"
+        stup ---G 'OK'
+        echo ": Git version managing tool (git)"
         exit 0
     else
         printf '  '
-        stup ---r 'FAIL'
-        printf ": Git version managing tool (git) not available"
+        stup ---R 'FAIL'
+        echo ": Git version managing tool (git) not available"
         exit 1
     fi
 fi
@@ -449,13 +449,13 @@ if [ "$*" == '---check-python' ]; then
 
     if [ "$OK" != "" ]; then
         printf '  '
-        stup ---g 'OK'
-        printf ": Python version ($PYVERS)"
+        stup ---G 'OK'
+        echo ": Python version ($PYVERS)"
         exit 0
     else
         printf '  '
-        stup ---r 'FAIL'
-        printf ": Python version ($PYVERS) - must be >= Python 3.10.0"
+        stup ---R 'FAIL'
+        echo ": Python version ($PYVERS) - must be >= Python 3.10.0"
         exit 1
     fi
 fi
@@ -470,13 +470,13 @@ if [ "$*" == '---check-pip' ]; then
 
     if [ "$ERR" == 0 ]; then
         printf '  '
-        stup ---g 'OK'
-        printf ": Python package manager (pip)"
+        stup ---G 'OK'
+        echo ": Python package manager (pip)"
         exit 0
     else
         printf '  '
-        stup ---r 'FAIL'
-        printf ": Python package manager (pip) not available"
+        stup ---R 'FAIL'
+        echo ": Python package manager (pip) not available"
         exit 1
     fi
 fi
@@ -491,13 +491,13 @@ if [ "$*" == '---check-venv' ]; then
 
     if [ "$ERR" == 0 ]; then
         printf '  '
-        stup ---g 'OK'
-        printf ": virtual Python environments (venv)"
+        stup ---G 'OK'
+        echo ": virtual Python environments (venv)"
         exit 0
     else
         printf '  '
-        stup ---r 'FAIL'
-        printf ": virtual Python environments (venv) not available"
+        stup ---R 'FAIL'
+        echo ": virtual Python environments (venv) not available"
         exit 1
     fi
 fi
@@ -653,6 +653,15 @@ fi
 
    if [ "$1" == "---c" ]; then
       printf "\x1b[36m";  shift;  echo "$*";  printf "\x1b[0m";  exit 0
+   fi
+
+
+   if [ "$1" == "---R" ]; then
+      printf "\x1b[31m";  shift;  printf "$*";  printf "\x1b[0m";  exit 0
+   fi
+
+   if [ "$1" == "---G" ]; then
+      printf "\x1b[32m";  shift;  printf "$*";  printf "\x1b[0m";  exit 0
    fi
 
 #===============================================================================
