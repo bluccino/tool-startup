@@ -663,9 +663,11 @@ fi
          sudo cp ~stup $BIN/stup || exit 1
       fi
       bash ~stup ---g "=== successful installation of stup (version `bash stup --version`)"
-      echo '  => enter: stup -?   # to see usage'
 
       rm -f ~stup                      # cleanup
+
+      bash stup                        # check system status
+      echo '  => enter: stup -?   # to see usage'
       exit 0
    fi
 
