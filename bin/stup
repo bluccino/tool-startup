@@ -54,7 +54,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0"
+      echo "1.0.0r"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -199,6 +199,8 @@
          echo      '       --brew option is only allowed on MacOS platforms'
          exit 1
       fi
+
+      stup --profile  # create ~/bin/profile.sh from scratch
 
       PROFILE=$BIN/profile.sh
       stup ---g "=== update ~/bin/profile.sh to add /opt/homebrew/bin to PATH ..."
