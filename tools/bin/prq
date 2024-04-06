@@ -1,0 +1,49 @@
+#!/bin/bash
+# prq: pull request (open web page to perform a pull request)
+
+   if [ "$*" == "-?" ] || [ "$*" == "--help" ]; then
+      echo '   usage: prq             # pull request (open web page to perform)'
+      echo '          prq --version   # print version'
+      echo '   see also: chk, gic, gid, gih, gil, gip, gir, gis, giu, prq, tag'
+      exit 1
+   fi
+
+#===============================================================================
+# print version: prq --version
+#===============================================================================
+
+   if [ "$*" == "--version" ]; then
+      echo "1.0.2"; exit 0
+   fi
+
+#===============================================================================
+# default: prq  # open web page to perform pull request
+#===============================================================================
+
+   if [ "$*" == "" ]; then
+      _BRANCH=`git status | grep 'On branch'`
+      _BRANCH=${_BRANCH#"On branch "}   # remove leading "On branch "
+
+      _URL=`git config --get remote.origin.url`
+      _URL=${_URL%".git"}/pull/new/$_BRANCH
+
+      _OPEN=open                # works on OSX
+      if [ `which $_OPEN` == "" ]; then
+         _OPEN=xdg-open         # should work on Linux
+      fi
+
+      ec -y "$_OPEN $_URL"
+      $_OPEN $_URL
+
+      unset _BRANCH
+      unset _URL
+      unset _OPEN
+      exit 0
+   fi
+
+#===============================================================================
+# cannot deal with anything else ...
+#===============================================================================
+
+   prq -?
+   exit 1

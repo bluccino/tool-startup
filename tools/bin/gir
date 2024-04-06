@@ -1,0 +1,104 @@
+#!/bin/bash
+# gir: git rename branch (local & remote)
+
+   if [ "$*" == "-?" ] || [ "$*" == "--help" ]; then
+	      if [ "$*" == "--help" ]; then
+           ec -g "Renaming of Local and/or Upstream Git Branches"
+           #echo ''
+           ec -c '1) Renaming a Local Branch and Bring Changes'
+           echo   '   To rename a local branch <oldname> to <newname> and bring the changes to'
+           echo   '   that branch make first sure that the branch to be renamed is checked out:'
+           printf "\x1b[33m\n      "
+           ec -y  "$ git checkout <oldname>     # checkout branch to be renamed"
+           ec -0
+           echo   '   The use the following git command to rename that branch and bring the changes:'
+           printf "\x1b[33m\n      "
+           ec -y  "$ git branch -m <newname>  # rename local branch and bring changes "
+           ec -0
+           ec -c  '2) Renaming an Upstream Branch'
+           echo   '   To rename the corresponding upstream branch use the following git command:'
+           printf "\x1b[33m\n      "
+           ec -y  "$ git push origin :<oldname> <newname>   # rename upstream branch"
+           ec -0
+           echo   '   In addition you need to update the upstream branch:'
+           printf "\x1b[33m\n      "
+           ec -y  "$ git push origin -u <newname>  # update upstream branch"
+           ec -0
+           ec -c  '3) Usage'
+           echo   ''
+        fi
+      echo '   usage: gir <old> <new>     # git rename branch (local & upstream)'
+      echo '          gir Bluco-V10.00 Bluco-V10.00.0'
+      echo '          gir -l <old> <new>  # git rename local branch'
+      echo '          gir -u <old> <new>  # git rename upstream branch'
+      echo '          gic -?              # show usage'
+      echo '          gic --help          # comprehensive help'
+      echo '          gic --version   # print version'
+      echo '   see also: chk, gic, gid, gil, gip, gir, gis, giu, prq, tag'
+      exit 1
+   fi
+
+#===============================================================================
+# print version: gir --version
+#===============================================================================
+
+   if [ "$*" == "--version" ]; then
+      echo "1.0.1"; exit 0
+   fi
+
+#===============================================================================
+# rename local branch: gir -l <old> <new>
+#===============================================================================
+
+   if [ "$1" != "-l" ]; then
+      shift
+      if [ "$1" == "" ] || [ "$2" == "" ] || [ "$3" != "" ]; then
+         gir -?;  exit 1
+      fi
+
+      echo "renaming local branch $1 to $2 ..."
+      echo "   checkout branch to rename: git checkout $1"
+      git checkout $1 || exit 1
+
+      echo "   rename local branch: git branch -m $2"
+      git branch -m $2 || exit 1
+
+      exit 0
+   fi
+
+#===============================================================================
+# rename local upstream: gir -u <old> <new>
+#===============================================================================
+
+   if [ "$1" != "-u" ]; then
+      shift
+      if [ "$1" == "" ] || [ "$2" == "" ] || [ "$3" != "" ]; then
+         gir -?;  exit 1
+      fi
+
+      echo "renaming global branch $1 to $2 ..."
+      echo "   change upstream: git push origin :$1 $2"
+      git push origin :$1 $2 || exit 1
+
+      echo "   complete upstream: git push origin -u $2"
+      git push origin -u $2 || exit
+
+      exit 0
+   fi
+
+#===============================================================================
+# standard call: gir <old> <new>
+#===============================================================================
+
+   if [ "$1" != "" ] && [ "$2" != "" ] && [ "$3" == "" ]; then
+      gir -l $1 $2 || exit 1   # rename local name of branch
+      gir -u $1 $2 || exit 1   # rename upstream name of branch
+      exit 0
+   fi
+
+#===============================================================================
+# cannot deal with anything else ...
+#===============================================================================
+
+   gir -?
+   exit 1

@@ -1,0 +1,83 @@
+#!/bin/bash
+# gib: git create branch (local & remote)
+
+   if [ "$*" == "-?" ] || [ "$*" == "--help" ]; then
+      echo '   usage: gib -! <branch>       # create branch (local & upstream)'
+      echo '          gib -! Bluco-V10.00   # create branch (local & upstream)'
+      echo '          gib -r <branch>       # refresh branch (local & upstream)'
+      echo '          gib -l <branch>       # create local branch only and bring changes'
+      echo '          gib -u <branch>       # create related upstream branch'
+      echo '          gib --version         # print version'
+      echo '   see also: chk, gib, gic, gid, gih, gil, gip, gir, gis, giu, prq, tag'
+      exit 1
+   fi
+
+#===============================================================================
+# print version: gib --version
+#===============================================================================
+
+   if [ "$*" == "--version" ]; then
+      echo "1.0.2"; exit 0
+   fi
+
+#===============================================================================
+# create local branch only and bring changes: gib -l <branch>
+#===============================================================================
+
+   if [ "$1" == "-l" ]; then
+      if [ "$3" != "" ]; then
+         gib -?; exit 1
+      fi
+
+      ec -y "   git checkout -b $2  # create and checkout new branch: $2"
+      git checkout -b $2 || exit 1
+      exit 0
+   fi
+
+#===============================================================================
+# create upstream branch: gib -u <branch>
+#===============================================================================
+
+   if [ "$1" == "-u" ] && [ "$2" != "" ]; then
+      ec -y "git push --set-upstream origin $2 # create upstream branch"
+      git push --set-upstream origin $2 || exit 1
+
+      ec -y "   git config pull.ff only  # allow only fast forward pulls"
+      git config pull.ff only || exit 1
+      exit 0
+   fi
+
+#===============================================================================
+# refresh branch
+#===============================================================================
+
+   if [ "$1" == "-r" ]; then
+      gid -! $2
+			gib -! $2
+      #git push --set-upstream origin $2
+      gil
+      exit 1
+   fi
+
+#===============================================================================
+# default: gib -! <branch>  # create new branch, bring all changes to new branch
+#===============================================================================
+
+   if [ "$1" == "-!" ]; then
+      if [ "$2" == "" ]; then
+         gib -?
+         exit 1
+      fi
+
+      gib -l $2 || exit 1       # create local branch and bring changes
+      gib -u $2 || exit 1       # create related upstream branch
+
+      exit 0
+   fi
+
+#===============================================================================
+# cannot deal with anything else ...
+#===============================================================================
+
+   gib -?
+   exit 1

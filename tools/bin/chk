@@ -1,0 +1,189 @@
+#!/bin/bash
+# chk: git checkout branch
+
+#  _ALPHA=alpha-a0.3.0
+#  _BETA=beta-b1.0.1
+#  _RELEASE=beta-b1.0.1
+
+#  _ALPHA=Bluco-816.4
+   _ALPHA=alfa-a1.0.1
+#  _BETA=Bluco-816.4
+   _BETA=beta-b1.0.1
+#  _RELEASE=Bluco-816.4
+   _RELEASE=beta-b1.0.1
+
+   if [ "$*" == "-?" ] || [ "$*" == "--help" ]; then
+      echo '  usage: chk <branch> # git checkout branch & update submodules'
+      echo '         chk ihux     # git checkout ihux branch'
+      echo '         chk          # git checkout ihux branch (short hand)'
+      echo "         chk -a       # git checkout $_ALPHA & pull"
+      echo "         chk -b       # git checkout $_BETA & pull"
+      echo "         chk -d       # git checkout develop & pull"
+      echo "         chk -r       # git checkout $_RELEASE & pull"
+      echo '         chk -s       # git checkout staging & pull'
+      echo '         chk -c       # git checkout chintan & pull'
+      echo '         chk -i       # git checkout ihux & pull'
+      echo '         chk -m       # git checkout master & pull'
+      echo '         chk -u       # update & checkout ihux to match staging'
+      echo '         chk --version  # print version'
+      echo ''
+      echo "   ALPHA:   $_ALPHA"
+      echo "   BETA:    $_BETA"
+      echo "   RELEASE: $_RELEASE"
+      echo ''
+      echo '  see also: chk, gic, gid, gih, gil, gip, gir, gis, giu, prq, tag'
+      exit 1
+   fi
+
+#===============================================================================
+# print version: chk --version
+#===============================================================================
+
+   if [ "$*" == "--version" ]; then
+      echo "1.0.2"; exit 0
+   fi
+
+#===============================================================================
+# chk -a    # git checkout alpha branch & pull
+#===============================================================================
+
+   if [ "$*" == "-a" ]; then
+     git checkout $_ALPHA
+     git config pull.ff only
+		 git pull
+     giu
+		 gis
+     gil
+     exit 0
+   fi
+
+#===============================================================================
+# chk -b    # git checkout beta branch & pull
+#===============================================================================
+
+   if [ "$*" == "-b" ]; then
+     git checkout $_BETA
+     git config pull.ff only
+		 git pull
+     giu
+		 gis
+     gil
+     exit 0
+   fi
+
+#===============================================================================
+# chk -c    # git checkout chintan & pull
+#===============================================================================
+
+   if [ "$*" == "-c" ]; then
+     git checkout chintan
+     git config pull.ff only
+		 git pull
+     giu
+		 gis
+     exit 0
+   fi
+
+#===============================================================================
+# chk -d    # git checkout develop & pull
+#===============================================================================
+
+   if [ "$*" == "-d" ]; then
+     git checkout develop
+     git config pull.ff only
+		 git pull
+     giu
+		 gis
+     gil
+     exit 0
+   fi
+
+#===============================================================================
+# chk -i    # git checkout ihux & pull
+#===============================================================================
+
+   if [ "$*" == "-i" ] | [ "$*" == "" ]; then
+     git checkout ihux
+     git config pull.ff only
+		 git pull
+     giu
+		 gis
+     exit 0
+   fi
+
+#===============================================================================
+# chk -m    # git checkout master & pull
+#===============================================================================
+
+   if [ "$*" == "-m" ]; then
+     git checkout master
+     git config pull.ff only
+		 git pull
+     giu
+		 gis
+     gil
+     exit 0
+   fi
+
+#===============================================================================
+# chk -r    # git checkout release version branch & pull
+#===============================================================================
+
+   if [ "$*" == "-r" ]; then
+     git checkout $_RELEASE
+     git config pull.ff only
+		 git pull
+     giu
+		 gis
+     gil
+     exit 0
+   fi
+
+#===============================================================================
+# chk -s    # git checkout staging & pull
+#===============================================================================
+
+   if [ "$*" == "-s" ]; then
+     git checkout staging
+     git config pull.ff only
+		 git pull
+     giu
+		 gis
+     gil
+     exit 0
+   fi
+
+#===============================================================================
+# chk -u   # update & checkout ihux to match staging branch
+#===============================================================================
+
+   IHUX=ihux
+
+   if [ "$1" == "-u" ]; then
+     giu
+ 		 gid -! $IHUX
+		 gib -! $IHUX
+		 git push --set-upstream origin $IHUX
+		 gil
+		 exit 0
+	 fi
+
+#===============================================================================
+# default: chk <branch>  # update & checkout ihux to match staging branch
+#===============================================================================
+
+   if [ "$1" != "" ] && [ "$2" == "" ]; then
+ 		 git checkout $1
+     git pull
+     giu
+		 git push --set-upstream origin $1
+     gil
+		 exit 0
+	 fi
+
+#===============================================================================
+# cannot deal with anything else ...
+#===============================================================================
+
+   chk -?
+   exit 1

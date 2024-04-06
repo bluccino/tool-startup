@@ -1,0 +1,46 @@
+#!/bin/bash
+# gil: git log with decorated log tree
+
+   if [ "$*" == "-?" ] || [ "$*" == "--help" ]; then
+      echo '   usage: gil             # git log with decorated log tree'
+      echo '          gil <dir>       # git log from a given directory'
+      echo '          gil --version   # print version'
+      echo '   see also: chk, gic, gid, gih, gil, gip, gir, gis, giu, prq, tag'
+      exit 1
+   fi
+
+#===============================================================================
+# print version: gil --version
+#===============================================================================
+
+   if [ "$*" == "--version" ]; then
+      echo "1.0.2"; exit 0
+   fi
+
+#===============================================================================
+# git log with no args
+#===============================================================================
+
+   if [ "$*" == "" ]; then
+     ec -y 'git log --decorate --oneline --graph --all'
+     ec -g "Repository: `git config --get remote.origin.url`"
+     git log --decorate --oneline --graph --all || exit 1
+     exit 0
+   fi
+
+#===============================================================================
+# git log from a given directory
+#===============================================================================
+
+   if [ "$1" != "-?" ] && [ "$2" == "" ]; then
+     cd "$1"
+     gil || exit 1
+     exit 0
+   fi
+
+#===============================================================================
+# cannot deal with anything else ...
+#===============================================================================
+
+   gil -?
+   exit 1

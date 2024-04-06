@@ -1,0 +1,60 @@
+#!/bin/bash
+# gip: git push origin
+
+   if [ "$*" == "-?" ] || [ "$*" == "--help" ]; then
+      echo '   usage: gip            # git push origin'
+      echo '          gip -o         # create branch at origin'
+      echo '          gip --version  # print version'
+      echo '   see also: chk, gib, gic, gid, gih, gil, gip, gir, gis, giu, prq, tag'
+      exit 1
+   fi
+
+#===============================================================================
+# print version: gip --version
+#===============================================================================
+
+   if [ "$*" == "--version" ]; then
+      echo "1.0.2"; exit 0
+   fi
+
+#===============================================================================
+# extract branch name: gib --branch-name
+#===============================================================================
+
+   if [ "$*" == "--branch-name" ]; then
+      _NAME=`git status | grep 'On branch'`
+      _NAME=${_NAME#"On branch "}   # remove leading "On branch "
+      echo $_NAME
+      unset _NAME
+      exit 0
+   fi
+
+#===============================================================================
+# create branch at origin (upstream branch): gip -o
+#===============================================================================
+
+   if [ "$*" == "-o" ]; then
+      ec -y "git push --set-upstream origin `gip --branch-name`"
+      git push --set-upstream origin `gip --branch-name` || exit 1
+
+      ec -y "   git config pull.ff only  # allow only fast forward pulls"
+      git config pull.ff only || exit 1
+      exit 0
+   fi
+
+#===============================================================================
+# standard: gip
+#===============================================================================
+
+   if [ "$*" == "" ]; then
+      echo "git push origin $*"
+      git push origin $* || exit 1
+      exit 0
+   fi
+
+#===============================================================================
+# cannot deal with anything else ...
+#===============================================================================
+
+   gip -?
+   exit 1

@@ -28,7 +28,7 @@
          echo      '  4) sourcing ~/bin/profile.sh from .bashrc'
          echo      '  5) installation of curl'
          echo      '  6) installation of git'
-         echo      '  7) installation of python 3.11'
+         echo      '  7) installation of python'
          echo      '  8) installation of pip'
          echo      '  9) installation of pimp, ec, idb and wd'
          stup ---c 'tasks of script ~/bin/profile.sh:'
@@ -54,7 +54,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0s"
+      echo "1.0.0"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 

@@ -1,0 +1,44 @@
+#!/bin/bash
+# gih - echo git home directory of git repository
+# also this works: $ git rev-parse --show-toplevel
+
+   if [ "$*" == "-?" ] || [ "$*" == "--help" ]; then
+       echo '  usage: gih  # echo git home directory of git repository'
+       echo '         gih -?          # show usage'
+       echo '         gih --version   # print version'
+       echo '  see also: chk, gic, gid, gih, gil, gip, gir, gis, giu, prq, tag'
+       exit 0
+   fi
+
+#===============================================================================
+# print version: gih --version
+#===============================================================================
+
+   if [ "$*" == "--version" ]; then
+      echo "1.0.2"; exit 0
+   fi
+
+#===============================================================================
+# standard call: gih
+#===============================================================================
+
+   if [ "$*" == "" ]; then
+      if [ -d ".git" ]; then
+         echo `pwd`
+      else
+         if [ "`pwd`" == "/" ]; then
+            exit 1
+         else
+            cd ..
+            gih
+         fi
+      fi
+      exit 0
+   fi
+
+#===============================================================================
+# cannot deal with anything else ...
+#===============================================================================
+
+   gih -?
+   exit 1
