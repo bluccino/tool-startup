@@ -54,7 +54,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0"
+      echo "1.0.0x"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -589,17 +589,53 @@
 #===============================================================================
 
    if [ "$*" == "--tree" ]; then
-      ERR="0"
-      stup --is-linux || ERR="1"   # only for Linux
-      if [ "$ERR" != "0" ]; then
-         stup ---r "error: stup $*"
-         echo      '       --git option is only allowed on Linux platforms'
-         exit 1
-      fi
+      stup --is-linux && stup ---tree-linux
+      stup --is-macos && stup ---tree-macos
+      exit 0
+   fi
 
+#===============================================================================
+# stup ---tree-linux   # install tree on Linux systems
+#===============================================================================
+
+   if [ "$*" == "---tree-linux" ]; then
       stup ---g '=== install tree ...'
       stup ---y 'sudo apt install tree'
       sudo apt install tree || exit 1
+
+      BLUCCINO=https://raw.githubusercontent.com/bluccino
+      REPO=tool-tv
+      URL="$BLUCCINO/$REPO/master"
+
+      stup ---g '=== install tv (tree view) ...'
+      stup ---y "curl -s $URL/bin/tv >$BIN/tv"
+      sudo curl -s $URL/bin/tv >$BIN/tv
+
+      stup ---y "chmod +x $BIN/tv"
+      sudo chmod +x $BIN/tv
+
+      exit 0
+   fi
+
+#===============================================================================
+# stup ---tree-macos   # install tree on MacOS systems
+#===============================================================================
+
+   if [ "$*" == "---tree-macos" ]; then
+      stup ---g '=== install tree ...'
+      stup ---y 'brew install tree'
+      brew install tree || exit 1
+
+      BLUCCINO=https://raw.githubusercontent.com/bluccino
+      REPO=tool-tv
+      URL="$BLUCCINO/$REPO/master"
+
+      stup ---g '=== install tv (tree view) ...'
+      stup ---y "curl -s $URL/bin/tv >$BIN/tv"
+      sudo curl -s $URL/bin/tv >$BIN/tv
+
+      stup ---y "chmod +x $BIN/tv"
+      sudo chmod +x $BIN/tv
 
       exit 0
    fi
