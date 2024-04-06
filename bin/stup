@@ -54,7 +54,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0"
+      echo "1.0.0q"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -228,18 +228,30 @@
 #===============================================================================
 
    if [ "$*" == "--git" ]; then
-      ERR="0"
-      stup ---is-linux || ERR="1"   # only for Linux
-      if [ "$ERR" != "0" ]; then
-         stup ---r "error: stup $*"
-         echo      '       --git option is only allowed on Linux platforms'
-         exit 1
-      fi
+      stup ---is-linux && stup ---git-linux
+      stup ---is-macos && stup ---git-macos
+      exit 0
+   fi
 
-      stup ---g '=== install git ...'
+#===============================================================================
+# stup ---git-linux   # install git on Linux platform
+#===============================================================================
+
+   if [ "$*" == "---git-linux" ]; then
+      stup ---g '=== install git on Linux platform ...'
       stup ---y 'sudo apt install git'
       sudo apt install git || exit 1
+      exit 0
+   fi
 
+#===============================================================================
+# stup ---git-macos   # install git on MacOS platform
+#===============================================================================
+
+   if [ "$*" == "---git-macos" ]; then
+      stup ---g '=== install git on MacOS platform ...'
+      stup ---y 'brew install git'
+      brew install git || exit 1
       exit 0
    fi
 
