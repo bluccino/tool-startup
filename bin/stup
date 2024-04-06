@@ -54,7 +54,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0x"
+      echo "1.0.0"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -169,7 +169,7 @@
 
    if [ "$*" == "--apt" ]; then
       ERR="0"
-      stup --is-linux || ERR="1"   # only for Linux
+      stup ---is-linux || ERR="1"   # only for Linux
       if [ "$ERR" != "0" ]; then
          stup ---r "error: stup $*"
          echo      '       --apt option is only allowed on Linux platforms'
@@ -193,7 +193,7 @@
 
    if [ "$*" == "--brew" ]; then
       ERR="0"
-      stup --is-macos || ERR="1"   # only for MacOS
+      stup ---is-macos || ERR="1"   # only for MacOS
       if [ "$ERR" != "0" ]; then
          stup ---r "error: stup $*"
          echo      '       --brew option is only allowed on MacOS platforms'
@@ -225,7 +225,7 @@
 
    if [ "$*" == "--git" ]; then
       ERR="0"
-      stup --is-linux || ERR="1"   # only for Linux
+      stup ---is-linux || ERR="1"   # only for Linux
       if [ "$ERR" != "0" ]; then
          stup ---r "error: stup $*"
          echo      '       --git option is only allowed on Linux platforms'
@@ -277,7 +277,7 @@
       echo "export GIT=~/Git" >>$RC
       echo "export BLU=https://github.com/bluccino" >>$RC
       echo '' >>$RC
-      stup --is-macos && echo 'export PATH=/opt/homebrew/bin:$PATH' >>$RC
+      stup ---is-macos && echo 'export PATH=/opt/homebrew/bin:$PATH' >>$RC
       echo 'export PATH=$BIN:$PATH' >>$RC
       echo '' >>$RC
       echo "alias activate='source pimp --activate'" >>$RC
@@ -300,9 +300,9 @@
 
          # pimp bash profile/recource file (if not yet pimped)
 
-      stup --is-linux && BARC=~/.bashrc
-      stup --is-wsl && BARC=~/.bashrc
-      stup --is-macos && BARC=~/.bash_profile
+      stup ---is-linux && BARC=~/.bashrc
+      stup ---is-wsl && BARC=~/.bashrc
+      stup ---is-macos && BARC=~/.bash_profile
 
       if [ "$BARC" == "" ]; then
          stup ---r "error: cannot identify bash profile/resource file for modification"
@@ -311,9 +311,9 @@
 
          # pimp bash profile/recource file (if not yet pimped)
 
-      stup --is-linux && BARC=~/.bashrc
-      stup --is-wsl && BARC=~/.bashrc
-      stup --is-macos && BARC=~/.bash_profile
+      stup ---is-linux && BARC=~/.bashrc
+      stup ---is-wsl && BARC=~/.bashrc
+      stup ---is-macos && BARC=~/.bash_profile
 
       if [ "$BARC" == "" ]; then
          stup ---r "error: cannot identify basg profile/resource file for modification"
@@ -336,9 +336,9 @@
 #===============================================================================
 
    if [ "$*" == "--python" ]; then
-      stup --is-macos  && stup ---python-macos
-      stup --is-ubuntu && stup ---python-ubuntu
-      stup --is-debian && stup ---python-debian
+      stup ---is-macos  && stup ---python-macos
+      stup ---is-ubuntu && stup ---python-ubuntu
+      stup ---is-debian && stup ---python-debian
       exit 0
    fi
 
@@ -435,9 +435,9 @@
 #===============================================================================
 
    if [ "$*" == "--zsdk" ]; then
-      stup --is-macos  && stup ---zsdk-macos
-      stup --is-ubuntu && stup ---zsdk-ubuntu
-      stup --is-debian && stup ---zsdk-debian
+      stup ---is-macos  && stup ---zsdk-macos
+      stup ---is-ubuntu && stup ---zsdk-ubuntu
+      stup ---is-debian && stup ---zsdk-debian
       exit 0
    fi
 
@@ -525,9 +525,9 @@
 #===============================================================================
 
    if [ "$*" == "--venv" ]; then
-      stup --is-macos  && stup ---venv-macos
-      stup --is-ubuntu && stup ---venv-ubuntu
-      stup --is-debian && stup ---venv-debian
+      stup ---is-macos  && stup ---venv-macos
+      stup ---is-ubuntu && stup ---venv-ubuntu
+      stup ---is-debian && stup ---venv-debian
       exit 0
    fi
 
@@ -571,7 +571,7 @@
 
    if [ "$*" == "--pip" ]; then
       ERR="0"
-      stup --is-linux || ERR="1"   # only for Linux
+      stup ---is-linux || ERR="1"   # only for Linux
       if [ "$ERR" != "0" ]; then
          stup ---r "error: stup $*"
          echo      '       --pip option is only implemented for Linux platforms'
@@ -589,8 +589,8 @@
 #===============================================================================
 
    if [ "$*" == "--tree" ]; then
-      stup --is-linux && stup ---tree-linux
-      stup --is-macos && stup ---tree-macos
+      stup ---is-linux && stup ---tree-linux
+      stup ---is-macos && stup ---tree-macos
       exit 0
    fi
 
@@ -768,7 +768,7 @@ fi
 
    if [ "$*" == '---check-apt' ]; then
       ERR="0"
-      stup --is-linux || ERR="1"   # only for Linux
+      stup ---is-linux || ERR="1"   # only for Linux
       if [ "$ERR" == "0" ]; then   # for linux ...
          NUMBER=`apt list --upgradable 2>/dev/null | wc -l`
          if [ "$NUMBER" == "1" ]; then
@@ -991,10 +991,10 @@ fi
 	 fi
 
 #===============================================================================
-# stup --is-linux
+# stup ---is-linux
 #===============================================================================
 
-   if [ "$1" == "--is-linux" ]; then
+   if [ "$1" == "---is-linux" ]; then
       if [ -f "/etc/os-release" ]; then
          exit 0   # running on Linux
       fi
@@ -1002,10 +1002,10 @@ fi
    fi
 
 #===============================================================================
-# stup --is-ubuntu
+# stup ---is-ubuntu
 #===============================================================================
 
-   if [ "$1" == "--is-ubuntu" ]; then
+   if [ "$1" == "---is-ubuntu" ]; then
       if [ -f "/etc/os-release" ]; then
          cat /etc/os-release | grep Ubuntu >/dev/null && exit 0
       fi
@@ -1013,10 +1013,10 @@ fi
    fi
 
 #===============================================================================
-# stup --is-debian
+# stup ---is-debian
 #===============================================================================
 
-   if [ "$1" == "--is-debian" ]; then
+   if [ "$1" == "---is-debian" ]; then
       if [ -f "/etc/os-release" ]; then
          cat /etc/os-release | grep Debian >/dev/null && exit 0
       fi
@@ -1024,10 +1024,10 @@ fi
    fi
 
 #===============================================================================
-# stup --is-macos
+# stup ---is-macos
 #===============================================================================
 
-   if [ "$1" == "--is-macos" ]; then
+   if [ "$1" == "---is-macos" ]; then
       if [ "$(uname)" == "Darwin" ]; then
          exit 0   # running on MacOs Darwin
       fi
@@ -1035,10 +1035,10 @@ fi
    fi
 
 #===============================================================================
-# stup --is-wsl
+# stup ---is-wsl
 #===============================================================================
 
-   if [ "$1" == "--is-wsl" ]; then
+   if [ "$1" == "---is-wsl" ]; then
       if [ -d /dev/serial ]; then
          exit 0   # running on Windows WSL
       fi
