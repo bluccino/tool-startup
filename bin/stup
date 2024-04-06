@@ -54,7 +54,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0y"
+      echo "1.0.0"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -270,36 +270,36 @@
    if [ "$*" == "--profile" ]; then
       stup ---g "=== install profile.sh ..."
 
-      RC="$BIN/profile.sh"
+      PROFILE="$BIN/profile.sh"
 
-      echo '#!/bin/bash' >$RC
-      echo '# profile.sh - startup resource file (always source!)' >>$RC
-      echo '' >>$RC
-      echo "export BIN=~/bin" >>$RC
-      echo "export TMP=~/tmp" >>$RC
-      echo "export ETC=~/etc" >>$RC
-      echo "export GIT=~/Git" >>$RC
-      echo "export BLU=https://github.com/bluccino" >>$RC
-      echo '' >>$RC
-      echo 'export PATH=$BIN:$PATH' >>$RC
-      echo '' >>$RC
-      echo "alias activate='source pimp --activate'" >>$RC
-      echo "alias wd='source wd.sh'" >>$RC
-      echo '' >>$RC
-      echo "export WORKIDB=$ETC" >>$RC
+      echo '#!/bin/bash' >$PROFILE
+      echo '# profile.sh - startup resource file (always source!)' >>$PROFILE
+      echo '' >>$PROFILE
+      echo "export BIN=~/bin" >>$PROFILE
+      echo "export TMP=~/tmp" >>$PROFILE
+      echo "export ETC=~/etc" >>$PROFILE
+      echo "export GIT=~/Git" >>$PROFILE
+      echo "export BLU=https://github.com/bluccino" >>$PROFILE
+      echo '' >>$PROFILE
+      echo 'export PATH=$BIN:$PATH' >>$PROFILE
+      echo '' >>$PROFILE
+      echo "alias activate='source pimp --activate'" >>$PROFILE
+      echo "alias wd='source wd.sh'" >>$PROFILE
+      echo '' >>$PROFILE
+      echo "export WORKIDB=$ETC" >>$PROFILE
 
          # make sure that directories exist
 
-      echo '' >>$RC
-      echo 'if [ ! -d "$BIN" ]; then mkdir $BIN; fi' >>$RC
-      echo 'if [ ! -d "$ETC" ]; then mkdir $ETC; fi' >>$RC
-      echo 'if [ ! -d "$TMP" ]; then mkdir $TMP; fi' >>$RC
-      echo 'if [ ! -d "$GIT" ]; then mkdir $GIT; fi' >>$RC
+      echo '' >>$PROFILE
+      echo 'if [ ! -d "$BIN" ]; then mkdir $BIN; fi' >>$PROFILE
+      echo 'if [ ! -d "$ETC" ]; then mkdir $ETC; fi' >>$PROFILE
+      echo 'if [ ! -d "$TMP" ]; then mkdir $TMP; fi' >>$PROFILE
+      echo 'if [ ! -d "$GIT" ]; then mkdir $GIT; fi' >>$PROFILE
 
          # set prompt
 
-      echo '' >>$RC
-      echo 'source stup --prompt' >>$RC
+      echo '' >>$PROFILE
+      echo 'source stup --prompt' >>$PROFILE
 
          # pimp bash profile/recource file (if not yet pimped)
 
