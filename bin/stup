@@ -14,7 +14,7 @@
       echo      '  stup --pip            # install pip (package installer for Python)'
       echo      '  stup --venv           # install venv (virtual Python environment)'
       echo      '  stup --python         # install Python 3.11'
-      echo      '  stup --rc             # install profile.sh'
+      echo      '  stup --profile        # install ~/bin/profile.sh'
       echo      '  stup --tree           # install tree'
       echo      '  stup --vamos          # install vamos'
       echo      '  stup --wd             # install ec, idb and wd'
@@ -54,7 +54,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0"
+      echo "1.0.0y"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -76,7 +76,7 @@
       if [ "$_SOURCED" == 0 ]; then
          stup --check || exit 1
       else
-         stup  --rc                # create resource file
+         stup  --profile                # create resource file
          source ~/bin/profile.sh    # source resource file
       fi
 
@@ -200,21 +200,25 @@
          exit 1
       fi
 
+      PROFILE=$BIN/profile.sh
+      stup ---g "=== update ~/bin/profile.sh to add /opt/homebrew/bin to PATH ..."
+      echo 'export PATH=/opt/homebrew/bin:$PATH' >>$PROFILE
+
       URL=https://raw.githubusercontent.com/Homebrew/install
 
       stup ---y 'bash -c "$(curl -fsSL '$URL'/HEAD/install.sh)"'
       bash -c "$(curl -fsSL $URL/HEAD/install.sh)"
 
-      (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') > ~/.zprofile
+      (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> ~/bin/profile.sh
 
-      stup ---y 'source ~/.zprofile'
-      source ~/.zprofile
+      stup ---y "source $PROFILE"
+      source $PROFILE
 
       stup ---y "brew install cmake ninja gperf python3 ccache qemu dtc libmagic wget"
       brew install cmake ninja gperf python3 ccache qemu dtc libmagic wget
 
-      (echo; echo 'export PATH="'$(brew --prefix)'/opt/python/libexec/bin:$PATH"') >> ~/.zprofile
-      source ~/.zprofile
+      (echo; echo 'export PATH="'$(brew --prefix)'/opt/python/libexec/bin:$PATH"') >> $PROFILE
+      source $PROFILE
 
       exit 0
    fi
@@ -260,10 +264,10 @@
    fi
 
 #===============================================================================
-# stup --rc   # install profile.sh
+# stup --profile   # install profile.sh
 #===============================================================================
 
-   if [ "$*" == "--rc" ]; then
+   if [ "$*" == "--profile" ]; then
       stup ---g "=== install profile.sh ..."
 
       RC="$BIN/profile.sh"
@@ -277,7 +281,6 @@
       echo "export GIT=~/Git" >>$RC
       echo "export BLU=https://github.com/bluccino" >>$RC
       echo '' >>$RC
-      stup ---is-macos && echo 'export PATH=/opt/homebrew/bin:$PATH' >>$RC
       echo 'export PATH=$BIN:$PATH' >>$RC
       echo '' >>$RC
       echo "alias activate='source pimp --activate'" >>$RC
@@ -703,12 +706,12 @@
 if [ "$*" == '--check' ]; then
     stup ---c 'checking basic system requirements ...'
     ERR=0
-    stup '---check-apt'    || ERR=1
-    stup '---check-rc'     || ERR=1
-    stup '---check-git'    || ERR=1
-    stup '---check-python' || ERR=1
-    stup '---check-venv'   || ERR=1
-    stup '---check-pimp'   || ERR=1
+    stup '---check-apt'     || ERR=1
+    stup '---check-profile' || ERR=1
+    stup '---check-git'     || ERR=1
+    stup '---check-python'  || ERR=1
+    stup '---check-venv'    || ERR=1
+    stup '---check-pimp'    || ERR=1
 
     if [ "$ERR" != 0 ]; then
         stup ---r "error: failing system requirements"
@@ -792,19 +795,19 @@ fi
    fi
 
 #===============================================================================
-# stup ---check-rc  # check ~/bin/profile.sh
+# stup ---check-profile  # check ~/bin/profile.sh
 #===============================================================================
 
-   if [ "$*" == '---check-rc' ]; then
+   if [ "$*" == '---check-profile' ]; then
       if [ -f "$BIN/profile.sh" ]; then
          printf '  '
          stup ---G 'OK'
-         echo ": resource file (~/bin/profile.sh)"
+         echo ": profile (~/bin/profile.sh)"
          exit 0
       else
          printf '  '
          stup ---R 'FAIL'
-         echo ": resource file (~/bin/profile.sh) => fix with: stup --rc"
+         echo ": profile (~/bin/profile.sh) => fix with: stup --profile"
          exit 1
       fi
       exit 0
