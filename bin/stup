@@ -55,7 +55,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0r"
+      echo "1.0.0s"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -404,7 +404,7 @@
    fi
 
 #===============================================================================
-# stup ---python-debian # install python3.11 on debian
+# stup ---python-ubuntu # install python3.11 on ubuntu
 #===============================================================================
 
    if [ "$*" == "---python-ubuntu" ]; then
@@ -922,7 +922,7 @@ fi
 
 if [ "$*" == '---check-python' ]; then
     ERR="1"
-    stup ---is-macos && [ "`which brew`" != "" ] && ERR="0"
+    stup ---is-macos && if [ "`which brew`" != "" ]; then ERR="0"; fi
 
     if [ "$ERR" == "0" ]; then
        PYVERS=`python3 --version`
