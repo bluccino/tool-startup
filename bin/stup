@@ -55,7 +55,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0y"
+      echo "1.0.0z"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -80,8 +80,6 @@
          stup  --profile                # create resource file
          source ~/bin/profile.sh    # source resource file
       fi
-
-
 
       unset _SOURCED
       return 0 2>/dev/null || exit 0  # safe return/exit
@@ -1007,11 +1005,8 @@ fi
 
       if [ ! -d "$BIN" ]; then
          echo "missing ~/bin directory"
-         #read -p "shall I create a ~/bin directory [Y/n]?" ANS
-		     #if [ "$ANS" == "Y" ] || [ "$ANS" == "y" ] || [ "$ANS" == "" ]; then
          bash ~stup ---g "=== creating ~/bin"
          mkdir $BIN
-		     #fi
       fi
 
       if [ "$BIN" == "" ]; then  # quit
