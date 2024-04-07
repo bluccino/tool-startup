@@ -54,7 +54,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0f"
+      echo "1.0.0g"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -952,8 +952,12 @@ fi
 #===============================================================================
 
 if [ "$*" == '---check-venv' ]; then
-    ERR=0
-    python3 -m venv -h >/dev/null 2>/dev/null || ERR=1
+    ERR="1"
+    stup ---is-macos && [ "`which brew`" != "" ] && ERR="0"
+
+    if [ "$ERR" == "0" ]; then
+       python3 -m venv -h >/dev/null 2>/dev/null || ERR=1
+    fi
 
     if [ "$ERR" == 0 ]; then
         printf '  '
