@@ -55,7 +55,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0x"
+      echo "1.0.0y"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -129,7 +129,8 @@
 
          # now install & source system profile
 
-      #source ~/bin/stup               # install/source system profile
+      bash ~/bin/stup --profile       # install profile
+      source ~/bin/profile.sh         # source profile
       bash ~/bin/stup                 # show installation status
 
       echo '  => enter: stup -?   # to see usage'
