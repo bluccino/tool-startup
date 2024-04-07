@@ -813,7 +813,7 @@ fi
       else
          printf '  '
          stup ---R 'FAIL'
-         echo ": system updates >= fix with: stup --brew"
+         echo ": system updates => fix with: stup --brew"
       fi
       exit 0
    fi
