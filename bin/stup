@@ -55,7 +55,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0a"
+      echo "1.0.0b"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -792,7 +792,8 @@ fi
          NUMBER=`apt list --upgradable 2>/dev/null | wc -l`
          ANS=`apt list --upgradable 2>/dev/null`
 
-         if [ "$NUMBER" == "1" ] && [ "$ANS" != "Listing..." ]; then
+         #if [ "$NUMBER" == "1" ] && [ "$ANS" != "Listing..." ]; then
+         if [ "$NUMBER" == "1" ]; then
             printf '  '
             stup ---G 'OK'
             echo ": system updates"
