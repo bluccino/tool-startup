@@ -54,7 +54,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0a"
+      echo "1.0.0b"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -904,7 +904,7 @@ fi
 
 if [ "$*" == '---check-python' ]; then
     ERR="1"
-    stup ---is-macos && stup ---check-system-macos && ERR="0"
+    stup ---is-macos && [ "`which brew`" != "" ] && ERR="0"
 
     if [ "$ERR" == "0" ]; then
        PYVERS=`python3 --version`
