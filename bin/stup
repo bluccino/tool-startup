@@ -47,30 +47,6 @@
          stup ---g 'environment variables:'
          echo      '  WORKDIR:   path of current working directory'
          echo      '  WORKIDB:   path of info database (storing label related info)'
-         echo      ''
-         stup ---g 'install pimped standard Python workspace:'
-         echo      '  $ mkdir /opt/zephyr/z3.6.99  # create Zephyr workspace topdir'
-         echo      '  $ cd /opt/zephyr/z3.6.99     # navigate to Zephyr workspace topdir'
-         echo      '  $ pimp -i @z3.6.99           # init pimp to create @z3.6.99'
-         echo      '  $ pimp -z                    # prepare pimping of Zephyr workspace'
-         echo      '  $ . pimp                     # run pimp process'
-         echo      '  $ pip install west           # install west in @z3.6.99'
-         echo      '  $ west init                  # init for standard Zephyr workspace'
-         echo      '  $ west update                # update Zephyr workspace'
-         echo      '  $ west zephyr-export         # export Zephyr Cmake package'
-         echo      '  $ pip install -r zephyr/scripts/requirements.txt  # install Zephyr requirements'
-         echo      ''
-         stup ---g 'install pimped specific Python workspace:'
-         echo      '  $ mkdir /opt/zephyr/z3.6.0   # create Zephyr workspace topdir'
-         echo      '  $ cd /opt/zephyr/z3.6.0      # navigate to Zephyr workspace topdir'
-         echo      '  $ pimp -i @z3.6.0            # init pimp to create @z3.6.0'
-         echo      '  $ pimp -z                    # prepare pimping of Zephyr workspace'
-         echo      '  $ . pimp                     # run pimp process'
-         echo      '  $ pip install west           # install west in @z3.6.0'
-         echo      '  $ west init -mr v3.6.0       # init Zephyr workspace revision v3.6.0'
-         echo      '  $ west update                # update Zephyr workspace'
-         echo      '  $ west zephyr-export         # export Zephyr Cmake package'
-         echo      '  $ pip install -r zephyr/scripts/requirements.txt  # install Zephyr requirements'
       fi
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
@@ -80,7 +56,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0j"
+      echo "1.0.0k"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -579,8 +555,54 @@
 
    if [ "$*" == "---zsdk-ubuntu" ]; then
       stup ---g "=== installing Zephyr SDK on Ubuntu ..."
-      stup ---r "error: stup $*"
-      echo      '       --zsdk option is not supported on Ubuntu'
+
+      if [ ! -d "/opt" ]; then
+         stup ---y "sudo mkdir /opt"
+         sudo mkdir /opt || exit 1
+      fi
+
+      if [ ! -d "/opt/zephyr" ]; then
+         stup ---y "sudo `whoami` /opt/zephyr"
+         sudo mkdir /opt/zephyr || exit 1
+         sudo chown `whoami` /opt/zephyr
+      fi
+
+      stup ---y "cd /opt/zephyr"
+      cd /opt/zephyr
+      stup ---c "working now in: `pwd`"
+
+      URL=https://github.com/zephyrproject-rtos/sdk-ng/releases/download
+      ZSDK=zephyr-sdk-0.16.5-1_macos-aarch64.tar.xz
+
+      stup ---g "=== download $ZSDK for MacOS ARM64 platform ..."
+      stup ---y "curl -L -O $URL/v0.16.5-1/$ZSDK"
+      curl -L -O $URL/v0.16.5-1/$ZSDK
+
+      stup ---g "=== checking integrity of $ZSDK ..."
+      stup ---y "curl -L $URL/v0.16.5-1/sha256.sum | shasum --check --ignore-missing"
+      curl -L $URL/v0.16.5-1/sha256.sum | shasum --check --ignore-missing
+
+      stup ---g "=== unpacking $ZSDK ..."
+      stup ---y "tar xvf $ZSDK"
+      tar xvf $ZSDK
+
+      stup ---y "cd zephyr-sdk-0.16.5-1"
+      cd zephyr-sdk-0.16.5-1
+      stup ---c "working now in: `pwd`"
+
+      stup ---y "./setup.sh"
+      ./setup.sh
+
+         # cleanup
+
+      cd ..
+      stup ---g "=== cleanup `pwd`"
+      stup ---c "working now in: `pwd`"
+
+      stup ---y "rm $ZSDK"
+      rm $ZSDK
+
+      stup ---g "=== Zephyr SDK installation complete!"
       exit 1
    fi
 
