@@ -55,7 +55,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0n"
+      echo "1.0.0o"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -129,11 +129,12 @@
 
          # now install & source system profile
 
-      source ~/bin/stup               # install/source system profile
-      bash ~/bin/stup                 # show installation status
+      source ~stup                    # install/source system profile
+      bash ~stup                      # show installation status
 
       echo '  => enter: stup -?   # to see usage'
 
+      rm -f ~stup                     # cleanup
       unset _ERR
       unset _SOURCED
       return 0 2>/dev/null || exit 0  # safe return/exit
@@ -1029,7 +1030,7 @@ fi
       fi
       bash ~stup ---g "=== successful installation of stup (version `bash stup --version`)"
 
-      rm -f ~stup                      # cleanup
+      #rm -f ~stup                      # cleanup
       exit 0
    fi
 
