@@ -55,7 +55,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0b"
+      echo "1.0.0c"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -598,6 +598,7 @@
    if [ "$*" == "---venv-ubuntu" ]; then
       stup ---g '=== installing venv for python 3.11 on ubuntu ...'
       stup ---y 'apt install python3.11-venv'
+      sudo apt install python3.10-venv
       sudo apt install python3.11-venv
 
       exit 0
