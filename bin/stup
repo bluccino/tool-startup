@@ -54,7 +54,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0"
+      echo "1.0.0q"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -848,10 +848,7 @@ fi
 #===============================================================================
 
 if [ "$*" == '---check-git' ]; then
-    ERR=0
-    git --version >/dev/null 2>/dev/null || ERR=1
-
-    if [ "$ERR" == 0 ]; then
+    if [ "`which git`" != "" ]; then
         printf '  '
         stup ---G 'OK'
         echo ": Git version managing tool (git)"
