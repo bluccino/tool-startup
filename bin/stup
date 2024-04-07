@@ -54,7 +54,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0x"
+      echo "1.0.0w"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -758,7 +758,7 @@ fi
 # stup ---check-system  # check for new system updates
 #===============================================================================
 
-   if [ "$*" == '--check-system' ]; then
+   if [ "$*" == '---check-system' ]; then
       stup ---is-linux && stup '---check-system-linux' && exit 0
       stup ---is-macos && stup '---check-system-macos' && exit 0
       exit 1
