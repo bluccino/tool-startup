@@ -55,7 +55,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0z"
+      echo "1.0.0a"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -754,8 +754,8 @@ if [ "$*" == '--check' ]; then
     stup ---c 'checking basic system requirements ...'
     ERR=0
 
-    stup '---check-system'  || ERR=1
     stup '---check-profile' || ERR=1
+    stup '---check-system'  || ERR=1
     stup '---check-git'     || ERR=1
     stup '---check-python'  || ERR=1
     stup '---check-venv'    || ERR=1
@@ -790,7 +790,9 @@ fi
       stup ---is-linux || ERR="1"   # only for Linux
       if [ "$ERR" == "0" ]; then   # for linux ...
          NUMBER=`apt list --upgradable 2>/dev/null | wc -l`
-         if [ "$NUMBER" == "1" ]; then
+         ANS=`apt list --upgradable 2>/dev/null`
+
+         if [ "$NUMBER" == "1" ] && [ "$ANS" != "Listing..." ]; then
             printf '  '
             stup ---G 'OK'
             echo ": system updates"
@@ -798,7 +800,7 @@ fi
          else
             printf '  '
             stup ---R 'FAIL'
-            echo ": new system updates available => fix with: stup --apt"
+            echo ": new system updates available => fix with: stup --system"
             exit 1
          fi
          exit 0
@@ -831,7 +833,7 @@ fi
       else
          printf '  '
          stup ---R 'FAIL'
-         echo ": system updates => fix with: stup --brew"
+         echo ": system updates => fix with: stup --system"
          exit 1
       fi
    fi
