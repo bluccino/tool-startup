@@ -10,4 +10,6 @@ tools/bin/gir
 tools/bin/gis
 tools/bin/prq
 tools/bin/tag
+tools/bin/cl
+tools/bin/run
 tools/bin/we
