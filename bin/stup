@@ -54,7 +54,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0"
+      echo "1.0.0h"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -200,27 +200,15 @@
          exit 1
       fi
 
-      stup --profile  # create ~/bin/profile.sh from scratch
-
-      PROFILE=$BIN/profile.sh
-      stup ---g "=== update ~/bin/profile.sh to add /opt/homebrew/bin to PATH ..."
-      echo 'export PATH=/opt/homebrew/bin:$PATH' >>$PROFILE
-
       URL=https://raw.githubusercontent.com/Homebrew/install
 
       stup ---y 'bash -c "$(curl -fsSL '$URL'/HEAD/install.sh)"'
       bash -c "$(curl -fsSL $URL/HEAD/install.sh)"
 
-      (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> ~/bin/profile.sh
+         # rebuild ~/bin/profile.sh
 
-      stup ---y "source $PROFILE"
-      source $PROFILE
-
-      stup ---y "brew install cmake ninja gperf python3 ccache qemu dtc libmagic wget"
-      brew install cmake ninja gperf python3 ccache qemu dtc libmagic wget
-
-      (echo; echo 'export PATH="'$(brew --prefix)'/opt/python/libexec/bin:$PATH"') >> $PROFILE
-      source $PROFILE
+      stup --profile
+      source ~/bin/profile.sh
 
       exit 0
    fi
@@ -310,6 +298,10 @@
       echo 'if [ ! -d "$TMP" ]; then mkdir $TMP; fi' >>$PROFILE
       echo 'if [ ! -d "$GIT" ]; then mkdir $GIT; fi' >>$PROFILE
 
+         # add extension for MacOS
+
+      stup ---is-macos && stup ---profile-macos
+
          # set prompt
 
       echo '' >>$PROFILE
@@ -344,6 +336,26 @@
          echo '' >>$BARC
          echo "source $BIN/profile.sh" >>$BARC
       fi
+
+      exit 0
+   fi
+
+#===============================================================================
+# stup ---profile-macos   # add homebrew setup to profile on Mac
+#===============================================================================
+
+   if [ "$*" == "---profile-macos" ]; then
+      PROFILE=$BIN/profile.sh
+
+         # update ~/bin/profile.sh to deal with homebrew
+
+      stup ---g "=== update ~/bin/profile.sh to add /opt/homebrew/bin to PATH ..."
+      echo '' >>$PROFILE
+      echo "echo '=== add homebrew to path ...'" >>$PROFILE
+      echo 'export PATH=/opt/homebrew/bin:$PATH' >>$PROFILE
+
+      echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >>$PROFILE
+      echo 'export PATH="/opt/homebrew/opt/python/libexec/bin:$PATH"' >>$PROFILE
 
       exit 0
    fi
