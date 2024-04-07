@@ -55,7 +55,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0q"
+      echo "1.0.0r"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -129,8 +129,8 @@
 
          # now install & source system profile
 
-      source ~stup                    # install/source system profile
-      bash ~stup                      # show installation status
+      source ~/bin/stup               # install/source system profile
+      bash ~/bin/stup                 # show installation status
 
       echo '  => enter: stup -?   # to see usage'
 
