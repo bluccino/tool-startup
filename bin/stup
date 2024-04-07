@@ -55,7 +55,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0s"
+      echo "1.0.0t"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -922,6 +922,7 @@ fi
 
 if [ "$*" == '---check-python' ]; then
     ERR="1"
+    stup ---is-linux && ERR="0"
     stup ---is-macos && if [ "`which brew`" != "" ]; then ERR="0"; fi
 
     if [ "$ERR" == "0" ]; then
@@ -971,6 +972,7 @@ fi
 
 if [ "$*" == '---check-venv' ]; then
     ERR="1"
+    stup ---is-linux && ERR="0"
     stup ---is-macos && [ "`which brew`" != "" ] && ERR="0"
 
     if [ "$ERR" == "0" ]; then
