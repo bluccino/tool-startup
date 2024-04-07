@@ -55,7 +55,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0u"
+      echo "1.0.0v"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -1030,7 +1030,7 @@ fi
          bash ~stup ---y "  sudo cp ~stup $BIN/stup"
          sudo cp ~stup $BIN/stup || exit 1
       fi
-      bash ~stup ---g "=== successful installation of stup (version `bash stup --version`)"
+      bash ~stup ---g "=== successful installation of stup (version `bash ~stup --version`)"
 
       #rm -f ~stup                      # cleanup
       exit 0
