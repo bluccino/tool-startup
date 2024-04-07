@@ -7,8 +7,7 @@
       stup ---g "usage: startup standard bash working environment from scratch (version `stup --version`)"
       echo      '  . stup                # create & source resource file ~/bin/profile.sh'
       echo      '  stup                  # check system installation (same as stup --check)'
-      echo      '  stup --apt            # update advanced packaging tool (on Linux)'
-      echo      '  stup --brew           # update home brew stuff (on MacOS)'
+      echo      '  stup --system         # refresh system updates/upgrades'
       echo      '  stup --git            # install git'
       echo      '  stup --pimp           # install pimp'
       echo      '  stup --pip            # install pip (package installer for Python)'
@@ -40,6 +39,8 @@
          stup ---g 'enhanced commands'
          echo      '  . bash ~stup -!    # install stup in a binary directory'
          echo      '  . stup --prompt    # set standard prompt'
+         echo      '  stup --apt            # update advanced packaging tool (on Linux)'
+         echo      '  stup --brew           # update home brew stuff (on MacOS)'
          echo      '  stup --check       # check installation'
          echo      '  stup --update      # stup version update'
          stup ---g 'environment variables:'
@@ -54,7 +55,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0i"
+      echo "1.0.0j"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -124,8 +125,14 @@
          export PATH=$BIN:$PATH
       fi
 
-      source ~stup --prompt
       bash ~stup ---!                 # self install
+
+         # now install & source system profile
+
+      source stup                     # install/source system profile
+      bash stup                       # show installation status
+
+      echo '  => enter: stup -?   # to see usage'
 
       unset _ERR
       unset _SOURCED
@@ -150,8 +157,8 @@
 #===============================================================================
 
 	 if [ "$*" == "--install" ]; then
-      stup --apt                # update/upgrade advance packaging tool
-      stup --git                # install git
+      . stup                    # install/source profile
+      stup --system             # refresh system updates/upgrades
       stup --pimp               # install pimp
       stup --tree               # install tree
       stup --vamos              # install vamos
@@ -160,6 +167,16 @@
       stup --pip                # install pip
 
       stup --check
+      exit 0
+   fi
+
+#===============================================================================
+# stup --system  # refresh system updates/upgrades'
+#===============================================================================
+
+   if [ "$*" == "--system" ]; then
+      stup ---is-linux && stup --apt
+      stup ---is-macos && stup --brew
       exit 0
    fi
 
@@ -1013,9 +1030,6 @@ fi
       bash ~stup ---g "=== successful installation of stup (version `bash stup --version`)"
 
       rm -f ~stup                      # cleanup
-
-      bash stup                        # check system status
-      echo '  => enter: stup -?   # to see usage'
       exit 0
    fi
 
