@@ -914,7 +914,7 @@ if [ "$*" == '---check-python' ]; then
     else
         printf '  '
         stup ---R 'FAIL'
-        echo ": Python version ($PYVERS) - must be >= Python 3.11.0 => fix with: stup --python"
+        echo ": Python version ($PYVERS) - must be >= Python 3.10.0 => fix with: stup --python"
         exit 1
     fi
 fi
