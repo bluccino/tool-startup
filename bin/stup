@@ -54,7 +54,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0i"
+      echo "1.0.0"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -282,11 +282,15 @@
       echo "export ETC=~/etc" >>$PROFILE
       echo "export GIT=~/Git" >>$PROFILE
       echo "export BLU=https://github.com/bluccino" >>$PROFILE
+
       echo '' >>$PROFILE
       echo 'export PATH=$BIN:$PATH' >>$PROFILE
+
       echo '' >>$PROFILE
       echo "alias activate='source pimp --activate'" >>$PROFILE
       echo "alias wd='source wd.sh'" >>$PROFILE
+      echo "alias bd='source bd.sh'" >>$PROFILE
+
       echo '' >>$PROFILE
       echo "export WORKIDB=$ETC" >>$PROFILE
 
