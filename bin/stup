@@ -903,8 +903,15 @@ fi
 #===============================================================================
 
 if [ "$*" == '---check-python' ]; then
-    PYVERS=`python3 --version`
-    OK=`echo $PYVERS | grep 'Python 3.1'`
+    ERR="1"
+    stup ---is-macos && stup ---check-system-macos && ERR="0"
+
+    if [ "$ERR" == "0" ]; then
+       PYVERS=`python3 --version`
+       OK=`echo $PYVERS | grep 'Python 3.1'`
+    else
+       OK=''   # empty python version if system not updated
+    fi
 
     if [ "$OK" != "" ]; then
         printf '  '
