@@ -810,12 +810,13 @@ fi
          printf '  '
          stup ---G 'OK'
          echo ": system updates"
+         exit 0
       else
          printf '  '
          stup ---R 'FAIL'
          echo ": system updates => fix with: stup --brew"
+         exit 1
       fi
-      exit 0
    fi
 
 #===============================================================================
@@ -880,7 +881,7 @@ fi
    fi
 
 #===============================================================================
-# check git availability
+# stup ---check-git  # check git availability
 #===============================================================================
 
 if [ "$*" == '---check-git' ]; then
