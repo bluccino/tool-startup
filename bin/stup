@@ -57,7 +57,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0o"
+      echo "1.0.0p"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -744,7 +744,7 @@
 # stup ----tools   # install tools
 #===============================================================================
 
-   if [ "$*" == "--vamos" ]; then
+   if [ "$*" == "--tools" ]; then
       stup ---g '=== install tools ...'
 
       if [ "`which pimp`" == "" ]; then
