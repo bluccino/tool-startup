@@ -56,7 +56,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0m"
+      echo "1.0.0n"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -78,8 +78,8 @@
       if [ "$_SOURCED" == 0 ]; then
          stup --check || exit 1
       else
-         stup  --profile                # create resource file
-         source ~/bin/profile.sh    # source resource file
+         stup  --profile              # create resource file
+         source ~/bin/profile.sh      # source resource file
       fi
 
       unset _SOURCED
@@ -377,7 +377,8 @@
       echo 'export PATH=/opt/homebrew/bin:$PATH' >>$PROFILE
 
       echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >>$PROFILE
-      echo 'export PATH="/opt/homebrew/opt/python/libexec/bin:$PATH"' >>$PROFILE
+      #echo 'export PATH="/opt/homebrew/opt/python/libexec/bin:$PATH"' >>$PROFILE
+      echo 'export PATH="$(brew --prefix)/opt/python@3.11/libexec/bin:$PATH"' >>$PROFILE
 
       exit 0
    fi
