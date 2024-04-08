@@ -57,7 +57,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0s"
+      echo "1.0.0t"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -773,6 +773,8 @@
          # install ec, idb, wd
 
       stup --wd
+      stup --tree
+
       exit 0
    fi
 
