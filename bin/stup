@@ -56,7 +56,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0l"
+      echo "1.0.0m"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -572,15 +572,15 @@
       stup ---c "working now in: `pwd`"
 
       URL=https://github.com/zephyrproject-rtos/sdk-ng/releases/download
-      ZSDK=v0.16.5-1/zephyr-sdk-0.16.5-1_linux-aarch64.tar.xz
+      ZSDK=zephyr-sdk-0.16.5-1_linux-aarch64.tar.xz
 
       stup ---g "=== download $ZSDK for MacOS ARM64 platform ..."
-      stup ---y "wget $URL/$ZSDK"
-      wget $URL/$ZSDK
+      stup ---y "wget $URL/v0.16.5-1/$ZSDK"
+      wget $URL/v0.16.5-1/$ZSDK
 
       stup ---g "=== checking integrity of $ZSDK ..."
-      stup ---y "wget -O $URL/v0.16.5-1/sha256.sum | shasum --check --ignore-missing"
-      wget -O $URL/v0.16.5-1/sha256.sum | shasum --check --ignore-missing
+      stup ---y "wget -O - $URL/v0.16.5-1/sha256.sum | shasum --check --ignore-missing"
+      wget -O - $URL/v0.16.5-1/sha256.sum | shasum --check --ignore-missing
 
       stup ---g "=== unpacking $ZSDK ..."
       stup ---y "tar xvf $ZSDK"
