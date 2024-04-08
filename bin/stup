@@ -767,8 +767,7 @@
 
          # cleanup
 
-      cd ..
-      rm -rf tool-stup || exit 1
+      rm -rf ~/tmp/tool-stup || exit 1
 
          # install ec, idb, wd
 
