@@ -57,7 +57,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0r"
+      echo "1.0.0s"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -770,6 +770,9 @@
       cd ..
       rm -rf tool-stup || exit 1
 
+         # install ec, idb, wd
+
+      stup --wd
       exit 0
    fi
 
