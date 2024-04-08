@@ -57,7 +57,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0t"
+      echo "1.0.0u"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -499,18 +499,28 @@
 #===============================================================================
 
    if [ "$*" == "---zsdk-macos" ]; then
-      stup ---g "=== installing Zephyr SDK on MacOS ..."
-
       if [ ! -d "/opt" ]; then
          stup ---y "sudo mkdir /opt"
          sudo mkdir /opt || exit 1
       fi
 
       if [ ! -d "/opt/zephyr" ]; then
+         stup ---g "=== creating /opt/zephyr directory ..."
          stup ---y "sudo `whoami` /opt/zephyr"
          sudo mkdir /opt/zephyr || exit 1
          sudo chown `whoami` /opt/zephyr
       fi
+
+         # install dependencies ...
+
+      stup ---g "=== installing dependencies ..."
+
+      stup ---y "brew install cmake ninja gperf python3 ccache qemu dtc libmagic wget"
+      brew install cmake ninja gperf python3 ccache qemu dtc libmagic wget
+
+         # install Zephyr SDK
+
+      stup ---g "=== installing Zephyr SDK on MacOS ..."
 
       stup ---y "cd /opt/zephyr"
       cd /opt/zephyr
