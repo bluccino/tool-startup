@@ -414,6 +414,9 @@
       stup ---y 'sudo apt-get install python3.11'
       sudo apt-get install python3.11 || exit 1
 
+      stup ---y 'sudo apt-get install python3.11-venv'
+      sudo apt-get install python3.11-venv || exit 1
+
       stup ---g '=== setup python3.11 as python3 standard ...'
 
       PYTHON3=`which python3`
