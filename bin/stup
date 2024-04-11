@@ -57,7 +57,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0x"
+      echo "1.0.0y"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -423,6 +423,10 @@
 
       stup ---y 'sudo apt install --no-install-recommends python3-setuptools python3-tk python3-wheel'
       sudo apt install --no-install-recommends python3-setuptools python3-tk python3-wheel || exit 1
+
+         # make sure that venv is working
+
+      stup ---venv-ubuntu
       exit 0
 
          # legacy ...
