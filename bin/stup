@@ -379,7 +379,12 @@
 
       echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >>$PROFILE
       #echo 'export PATH="/opt/homebrew/opt/python/libexec/bin:$PATH"' >>$PROFILE
-      echo 'export PATH="$(brew --prefix)/opt/python@3.11/libexec/bin:$PATH"' >>$PROFILE
+
+      if [ "$(which brew)" == "" ]; then
+         echo 'export PATH="/opt/homebrew/opt/python@3.11/libexec/bin:$PATH"' >>$PROFILE
+      else
+         echo 'export PATH="$(brew --prefix)/opt/python@3.11/libexec/bin:$PATH"' >>$PROFILE
+      fi
 
       exit 0
    fi
