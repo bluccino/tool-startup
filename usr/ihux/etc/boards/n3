@@ -1,0 +1,4 @@
+  export BRDID=n3
+  export BOARD=nrf52dk_nrf52832
+  export SEGGER=682947131
+  export BRDINFO='Nordic 832dk #3'

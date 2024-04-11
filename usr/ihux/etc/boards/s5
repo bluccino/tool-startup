@@ -1,0 +1,4 @@
+  export BRDID=s5
+  export BOARD=nucleo_l053r8
+  export SEGGER=218334027
+  export BRDINFO='(Nucleo L053R8 board #5)'

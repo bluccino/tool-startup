@@ -1,0 +1,4 @@
+  export BRDID=b3
+  export BOARD=nrf52dk_nrf52832
+  export SEGGER=50124392
+  export BRDINFO='Bluco #3'

@@ -1,0 +1,4 @@
+  export BRDID=p2
+  export BOARD=nrf21540dk_nrf52840
+  export SEGGER=683422499
+  export BRDINFO='(Power Beacon #2)'

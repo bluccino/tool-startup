@@ -1,0 +1,4 @@
+  export BRDID=q3
+  export BOARD=qemu_cortex_m3
+  export SEGGER=src
+  export BRDINFO='QEMU cortex M3 Board'
