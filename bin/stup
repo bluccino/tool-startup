@@ -57,7 +57,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0w"
+      echo "1.0.0x"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -307,6 +307,8 @@
 
       echo '' >>$PROFILE
       echo "alias activate='source pimp --activate'" >>$PROFILE
+      echo "alias ve=activate" >>$PROFILE
+      echo "alias de=deactivate" >>$PROFILE
       echo "alias wd='source wd.sh'" >>$PROFILE
       echo "alias bd='source bd.sh'" >>$PROFILE
 
