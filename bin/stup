@@ -7,13 +7,15 @@
       stup ---g "usage: startup standard bash working environment from scratch (version `stup --version`)"
       echo      '  . stup                # create & source resource file ~/bin/profile.sh'
       echo      '  stup                  # check system installation (same as stup --check)'
+      echo      '  stup --profile        # install ~/bin/profile.sh'
       echo      '  stup --system         # refresh system updates/upgrades'
       echo      '  stup --git            # install git'
-      echo      '  stup --pimp           # install pimp'
+      echo      '  stup --python         # install Python 3.11'
       echo      '  stup --pip            # install pip (package installer for Python)'
       echo      '  stup --venv           # install venv (virtual Python environment)'
-      echo      '  stup --python         # install Python 3.11'
-      echo      '  stup --profile        # install ~/bin/profile.sh'
+      echo      '  stup --pimp           # install pimp'
+      echo      ''
+      echo      '  stup --code           # install VS code editor'
       echo      '  stup --tree           # install tree'
       echo      '  stup --tools          # install tools of tool-stup repo'
       echo      '  stup --vamos          # install vamos'
@@ -690,6 +692,58 @@
       sudo apt install python3.11-venv
 
       exit 0
+   fi
+
+
+
+#===============================================================================
+# stup --code   # install VS code editor
+#===============================================================================
+
+   if [ "$*" == "--code" ]; then
+      stup ---is-macos  && stup ---code-macos
+      stup ---is-ubuntu && stup ---code-ubuntu
+      stup ---is-debian && stup ---code-debian
+      exit 0
+   fi
+
+#===============================================================================
+# stup ---code-macos  # install python3.11 on MacOS
+#===============================================================================
+
+   if [ "$*" == "---code-macos" ]; then
+      stup ---r "error: stup $*"
+      echo      '       --code option is not supported for MacOS'
+      exit 1
+   fi
+
+#===============================================================================
+# stup ---code-ubuntu  # install python3.11 on MacOS
+#===============================================================================
+
+   if [ "$*" == "---code-ubuntu" ]; then
+      stup ---g "=== install VS code for Linux (arm64) ..."
+
+      stup ---y "curl -L https://aka.ms/linux-arm64-deb > code_arm64.deb"
+      curl -L https://aka.ms/linux-arm64-deb > code_arm64.deb || exit 1
+
+      stup ---y "apt install ./code_arm64.deb"
+      sudo apt install ./code_arm64.deb
+
+      stup ---y "rm -rf code_arm64.deb"
+      rm -rf code_arm64.deb || exit 1
+
+      exit 0
+   fi
+
+#===============================================================================
+# stup ---code-debian  # install python3.11 on MacOS
+#===============================================================================
+
+   if [ "$*" == "---code-debian" ]; then
+      stup ---r "error: stup $*"
+      echo      '       --code option is not supported forDebian'
+      exit 1
    fi
 
 #===============================================================================
