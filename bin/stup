@@ -59,7 +59,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.0f"
+      echo "1.0.0"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -301,7 +301,7 @@
       echo "export BIN=~/bin" >>$PROFILE
       echo "export TMP=~/tmp" >>$PROFILE
       echo "export ETC=~/etc" >>$PROFILE
-      echo "export GIT=~/Git" >>$PROFILE
+      echo "export GIT=~/git" >>$PROFILE
       echo "export BLU=https://github.com/bluccino" >>$PROFILE
 
       echo '' >>$PROFILE
