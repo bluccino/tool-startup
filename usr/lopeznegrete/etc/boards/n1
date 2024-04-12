@@ -1,0 +1,4 @@
+  export BRDID=n1
+  export BOARD=nrf52840dk_nrf52840
+  export SEGGER=1050218190
+  export BRDINFO='840DK n1'

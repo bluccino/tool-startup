@@ -1,0 +1,4 @@
+  export BRDID=q1
+  export BOARD=qemu_x86
+  export SEGGER=???
+  export BRDINFO='qemu_x86 q1'

@@ -1,0 +1,4 @@
+  export BRDID=d1
+  export BOARD=nrf52840dongle_nrf52840
+  export SEGGER=???
+  export BRDINFO='nordic nrf52840 dongle'
