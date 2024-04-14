@@ -60,7 +60,7 @@
 #===============================================================================
 
    if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
-      echo "1.0.1"
+      echo "1.0.1a"
       return 0 2>/dev/null || exit 0  # safe return/exit
    fi
 
@@ -717,8 +717,8 @@
    if [ "$*" == "---build-macos" ]; then
       stup ---g '=== installing build tools for MacOS ...'
 
-      ERR=0
-      brew --version >/dev/null 2>/devnull || ERR=1
+      ERR="0"
+      brew --version >/dev/null 2>/devnull || ERR="1"
       if [ "$ERR" != "0" ]; then
          stup ---r "error: stup $*"
          echo      '       --brew is not installed => fix: stup --system'
