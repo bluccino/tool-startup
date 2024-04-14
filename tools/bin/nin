@@ -35,15 +35,24 @@
       echo '          nin -w1.14.0    # west refresh after zephyr v1.14.0 checkout'
       echo '          nin -w2.7.0     # west refresh after zephyr v2.7.0 checkout'
       echo '          nin -?          # ninja help'
+      echo '          nin --version   # print version'
       echo ''
       echo "   see also: mk, cl"
       exit 1
    fi
 
-#
+#===============================================================================
+# nin --version (nin --v)  # print version
+#===============================================================================
+
+   if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
+      echo 1.0.1
+      exit 0
+   fi
+
+#===============================================================================
 # node $BLUCO/test/test-bluco/test-bluco.js
-#
-#
+#===============================================================================
 
    BUILD=build
 #  BUILD=build_$BOARD
