@@ -1,0 +1,210 @@
+##!/bin/bash
+# tel: attach to telnet
+
+   if [ "$*" == "-?" ]; then
+      echo '   usage: tel [<number>] # attach to telnet'
+      echo ''
+      echo '          tel            # attach to terminal'
+      echo ''
+      echo '          tel +0         # start netcat terminal #0 (port 19021)'
+      echo '          tel 0          # attach with Segger logger to terminal'
+      echo '          . tel 0        # set current terminal 01 and attach (port 19021)'
+      echo ''
+      echo '          tel +1         # start netcat terminal #1 (port 19024)'
+      echo '          tel 1          # attach to netcat terminal #1 (port 19024)'
+      echo '          . tel 1        # set current terminal #1 and attach (port 19024)'
+      echo ''
+      echo '          tel +2         # start netcat terminal #2 (port 19025)'
+      echo '          tel 2          # attach to netcat terminal #2 (port 19025)'
+      echo '          . tel 2        # set current terminal #2 and attach (port 19025)'
+      echo ''
+      echo '          tel +3         # start netcat terminal #3 (port 19026)'
+      echo '          tel 3          # attach to netcat terminal #3 (port 19026)'
+      echo '          . tel 3        # set current terminal #3 and attach (port 19026)'
+      echo ''
+      echo '          tel -T 19024   # attach to telnet port 19024'
+      echo '          tel -T 19025   # attach to telnet port 19025'
+      echo '          tel -T 19026   # attach to telnet port 19026'
+      echo ''
+      echo '          tel W          # attach to wearable'
+      echo '          tel B          # attach to beacon'
+      echo ''
+      echo '          tel --version  # print version'
+      exit 0
+   fi
+
+#===============================================================================
+# nin --version (nin --v)  # print version
+#===============================================================================
+
+   if [ "$*" == "--version" ] || [ "$*" == "--v" ]; then
+      echo 1.0.1
+      exit 0
+   fi
+
+#===============================================================================
+# attach to a telnet port
+#===============================================================================
+
+  if [ "$1" == "-T" ] && [ "$2" != "" ]; then
+     telnet localhost $2
+     #speed 115200, 8 data bits, 1 stop bit
+  fi
+
+#===============================================================================
+# attach to wearable or beacon
+#===============================================================================
+
+  if [ "$1" == "W" ] && [ "$2" == "" ]; then
+     ec -g "telnet to wearable"
+     . board W
+     tel
+		 exit 0
+  fi
+
+  if [ "$1" == "B" ] && [ "$2" == "" ]; then
+     ec -m "telnet to beacon"
+     . board B
+     tel
+		 exit 0
+  fi
+
+#===============================================================================
+# start a telnet terminal
+#===============================================================================
+
+  if [ "$*" == "-1" ]; then
+      bgr -k
+      forever=1
+      while [ $forever -le 999 ]
+      do
+         tel -T 19024        # connect with telnet using port 19024
+         clear
+         ec -0 "Telnet Terminal #1: connect to telnet @ port 19024"
+         sleep 0.5
+      done
+      #speed 115200, 8 data bits, 1 stop bit
+  fi
+
+  if [ "$*" == "-2" ]; then
+      bgr -k
+      forever=1
+      while [ $forever -le 999 ]
+      do
+         tel -T 19025        # connect with telnet using port 19025
+         clear
+         ec -0 "Telnet Terminal #2: connect to telnet @ port 19025"
+         sleep 0.5
+      done
+      #speed 115200, 8 data bits, 1 stop bit
+  fi
+
+  if [ "$*" == "-3" ]; then
+      bgr -k
+      forever=1
+      while [ $forever -le 999 ]
+      do
+         tel -T 19026        # connect with telnet using port 19026
+         clear
+         ec -0 "Telnet Terminal #3: connect to telnet @ port 19026"
+         sleep 0.5
+      done
+      #speed 115200, 8 data bits, 1 stop bit
+  fi
+
+  if [ "$*" == "-u" ]; then
+      forever=1
+      while [ $forever -le 999 ]
+      do
+         echo "Telnet Terminal #1: connect to telnet @ port 11101"
+         tel -T 11101        # connect with telnet using port 11101
+         clear
+         sleep 0.5
+      done
+      #speed 115200, 8 data bits, 1 stop bit
+  fi
+
+#===============================================================================
+# start a netcat terminal
+#===============================================================================
+
+  if [ "$*" == "+0" ]; then
+     forever=1
+      while [ $forever -le 999 ]
+      do
+         nc -vc localhost 19021       # connect with telnet using port 19021
+         clear
+         ec -0 "NETCAT Terminal #0: connect to netcat @ port 19021"
+         sleep 0.5
+      done
+  fi
+
+  if [ "$*" == "+1" ]; then
+     forever=1
+      while [ $forever -le 999 ]
+      do
+         nc -vc localhost 19024       # connect with telnet using port 19024
+         clear
+         ec -0 "NETCAT Terminal #1: connect to netcat @ port 19024"
+         sleep 0.5
+      done
+  fi
+
+  if [ "$*" == "+2" ]; then
+     forever=1
+      while [ $forever -le 999 ]
+      do
+         nc -vc localhost 19025        # connect with telnet using port 19025
+         clear
+         ec -0 "NETCAT Terminal #2: connect to netcat @ port 19025"
+         sleep 0.5
+      done
+  fi
+
+  if [ "$*" == "+3" ]; then
+     forever=1
+      while [ $forever -le 999 ]
+      do
+         nc -vc localhost 19026        # connect with telnet using port 19026
+         clear
+         ec -0 "NETCAT Terminal #2: connect to netcat @ port 19026"
+         sleep 0.5
+      done
+  fi
+
+#===============================================================================
+# attach to a telnet terminal via JLinkRTTLogger (#0) or JLinkExe (#1,#2,#3)
+# - for $SEGGER_DVC we use "NRF52832_XXAA" or "NRF52840_XXAA"
+#===============================================================================
+
+  if [ "$*" == "0" ]; then
+      export TNET=0
+      if [ -d build ]; then
+        JLinkRTTLogger -Device $SEGGER_DVC -RTTChannel 1 -if SWD -Speed 4000 -USB "$SEGGER" build/rtt.log || exit 1
+      else
+        JLinkRTTLogger -Device $SEGGER_DVC -RTTChannel 1 -if SWD -Speed 4000 -USB "$SEGGER" /dev/null || exit 1
+      fi
+  fi
+
+  if [ "$*" == "1" ]; then
+      export TNET=$*
+      ec -y JLinkExe -device NRF52 -speed 4000 -if SWD -RTTTelnetport 19024 -AutoConnect 1  -SelectEmuBySN "${SEGGER}"
+      JLinkExe -device NRF52 -speed 4000 -if SWD -RTTTelnetport 19024 -AutoConnect 1  -SelectEmuBySN "${SEGGER}" || exit 1
+  fi
+
+  if [ "$*" == "2" ]; then
+      export TNET=$*
+      JLinkExe -device NRF52 -speed 4000 -if SWD -RTTTelnetport 19025 -AutoConnect 1  -SelectEmuBySN "${SEGGER}" || exit 1
+  fi
+
+  if [ "$*" == "3" ]; then
+      export TNET=$*
+      JLinkExe -device NRF52 -speed 4000 -if SWD -RTTTelnetport 19026 -AutoConnect 1  -SelectEmuBySN "${SEGGER}" || exit 1
+  fi
+
+  if [ "$*" == "" ]; then
+      if [ "$TNET" == "" ]; then
+          export TNET=1           # default $TNET value is 1
+      fi
+      tel $TNET
+  fi
