@@ -3,3 +3,7 @@
 @startup
 
 ~stup
+
+# .west and dependencies folder
+.west
+deps

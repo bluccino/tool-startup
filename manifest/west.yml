@@ -1,0 +1,23 @@
+manifest:
+  version: 0.8
+
+  projects:
+    - name: tool-ec
+      url: https://github.com/bluccino/tool-ec
+      path: deps/tool-ec
+
+    - name: tool-idb
+      url: https://github.com/bluccino/tool-idb
+      path: deps/tool-idb
+
+    - name: tool-wd
+      url: https://github.com/bluccino/tool-wd
+      path: deps/tool-wd
+
+    - name: tool-git
+      url: https://github.com/bluccino/tool-git
+      path: deps/tool-git
+
+    - name: tool-zephyr
+      url: https://github.com/bluccino/tool-zephyr
+      path: deps/tool-zephyr
