@@ -1,0 +1,377 @@
+##!/bin/bash
+# nin: ninja build command for Zephyr
+
+   if [ "$*" == "-?" ]; then
+      echo '   usage: nin -bcfjmst?   # ninja for Zephyr build'
+      echo '          nin             # ninja make, flash and jlink'
+      echo '          nin -a          # add trailer to prj.conf'
+      echo '          nin -b          # create build directory and config for build'
+      echo '          nin -c          # clean'
+      echo '          nin -e          # erase flash memory'
+      echo '          nin -f          # flash (using west)'
+      echo '          nin -fn         # flash (flash using nrfjprog)'
+      echo '          nin -F          # flash micro:bit'
+      echo '          nin -h          # copy zephyr.hex to $TMP'
+      echo '          nin -j          # J-linking to NDK52 @ board address'
+      echo '          nin -j1         # J-linking to j-Link address #1'
+      echo '          nin -j2         # J-linking to j-Link address #2'
+      echo '          nin -J          # J-linking to NDK52 (default address)'
+      echo '          nin -m          # make'
+      echo '          nin -mh         # make and copy zephyr.hex to $TMP'
+      echo '          nin -p          # prestine build and run'
+      echo '          nin -pm         # prestine build, no run'
+      echo '          nin -pmh        # prestine build, no run, copy zephyr.hex to $TMP'
+      echo '          nin -rpm        # recursive prestine build, no run'
+      echo '          nin -s          # run screen (terminal, exit with <ctl-a> d)'
+      echo '          nin -T          # start telnet (one time)'
+      echo '          nin -t          # loop telnet (forever)'
+      echo '          nin -t1         # loop telnet window 1 (forever)'
+      echo '          nin -t2         # loop telnet window 2 (forever)'
+      echo '          nin -tn         # loop telnet for ninja (forever) - same as -t'
+      echo '          nin -tg         # loop telnet gdb (forever)'
+      echo '          nin -u          # unlock flash memory'
+      echo '          nin -V7.01      # flash BlucoV7.01'
+      echo '          nin -w          # west refresh after zephyr checkout'
+      echo '          nin -w1.14.0    # west refresh after zephyr v1.14.0 checkout'
+      echo '          nin -w2.7.0     # west refresh after zephyr v2.7.0 checkout'
+      echo '          nin -?          # ninja help'
+      echo ''
+      echo "   see also: mk, cl"
+      exit 1
+   fi
+
+#
+# node $BLUCO/test/test-bluco/test-bluco.js
+#
+#
+
+   BUILD=build
+#  BUILD=build_$BOARD
+
+   SAMPLE=$ZEPHYR_BASE/samples/boards/nrf52/mesh
+   SAMPLE1=$SAMPLE/onoff-app
+   SAMPLE2=$SAMPLE/onoff_level_lighting_vnd_app
+
+   CORE=$BLUCO/kernel/ZEPHYR/core
+
+# change directory if arg2 is provided
+
+   if [ "$2" != "" ]
+   then
+      if [ -d "$2" ]
+      then
+         ec -g "nin $1 $2"
+         cd $2
+         nin $1 || exit 1
+         exit 0
+      else
+         ec -r "*** error: no directory: $2"
+         exit 1
+      fi
+   fi
+
+#===============================================================================
+# generic ninja command 'nin'
+#===============================================================================
+
+   if [ "$*" == "" ]; then
+      ec -y "=> zephyr version: $ZVERSION ($ZEPHYR), BOARD: $BOARD"
+      [ -e $BUILD ] || nin -b  # run 'nin -b' if build dir does not exist
+      cd $BUILD
+      ninja || exit 1
+      cd ..
+
+      if [ "$BOARD" == "qemu_cortex_m3" ]; then
+         west build -t run
+      else
+         nin -e || exit 1
+         nin -f || exit 1
+         nin -j || exit 1
+      fi
+      exit 0
+   fi
+
+# make target
+
+   if [ "$*" == "-m" ]; then
+      ec -y "=> zephyr version: $ZVERSION ($ZEPHYR), BOARD: $BOARD"
+	    [ -e $BUILD ] || nin -b  # run 'nin -b' if build dir does not exist
+	    cd $BUILD
+	    ninja || exit 1
+	    exit 0
+	 fi
+
+   if [ "$*" == "-mh" ]; then
+      nin -m || exit 1
+      nin -h
+	    exit 0
+	 fi
+
+#===============================================================================
+# cleaning
+#===============================================================================
+
+  if [ "$*" == "-c" ]; then
+      ec -y "   cleaning $BUILD ..."
+#     rm -rf build* || exit 1
+      rm -rf $BUILD || exit 1
+      rm -rf Debug || exit 1
+      exit 0
+  fi
+
+#===============================================================================
+# flashing
+#===============================================================================
+
+  if [ "$*" == "-e" ]; then   # erase flash area
+      echo 'erasing nRF52 flash area of target ...'
+      nrfjprog --family nRF52 --eraseall --snr ${SEGGER} || exit 1
+      exit 0
+  fi
+
+# old style flashing, using nrfjprog
+
+  if [ "$*" == "-fn" ]; then   # flash NDK52
+      ec -y 'flashing (using nrfjprog) ...'
+#     nin -e || exit 1
+      nrfjprog --reset --family nRF52 --program $BUILD/zephyr/zephyr.hex --snr ${SEGGER} || exit 1
+      exit 0
+  fi
+
+#new style flashing with west
+
+  if [ "$*" == "-f" ]; then   # flash NDK52
+      if [ "$SEGGER" == "" ]
+      then
+        ec -y 'flashing (using west) ...'
+        west flash --build-dir build_$BOARD || exit 1
+      else
+        ec -y 'flashing (using nrfjprog) ...'
+        nrfjprog --reset --family nRF52 --program $BUILD/zephyr/zephyr.hex --snr ${SEGGER} || exit 1
+      fi
+      exit 0
+  fi
+
+# flash
+
+  if [ "$*" == "-F" ]; then   # flash micro:bit
+      echo 'flashing micro:bit ...'
+      cp build/zephyr/zephyr.hex /Volumes/MICROBIT
+      exit 0
+  fi
+
+#===============================================================================
+# hex file copy to $TMP
+#===============================================================================
+
+   if [ "$*" == "-h" ]; then
+	    ec -y "=> copying $BUILD/zephyr/zephyr.hex to $TMP"
+	    cp $BUILD/zephyr/zephyr.hex $TMP/ || exit 1
+	    exit 0
+	 fi
+
+#===============================================================================
+# jlink connection
+#===============================================================================
+
+  if [ "$*" == "-j" ]; then
+      echo 'J-linking ...'
+#     JLinkRTTLogger -Device NRF52840_XXAA -RTTChannel 1 -if SWD -Speed 4000 ~/rtt.log
+#     JLinkRTTLogger -Device NRF52832_XXAA -RTTChannel 0 -if SWD -Speed 4000 ~/rtt.log
+#     JLinkRTTLogger -Device nrf52_pca10040 -RTTChannel 1 -if SWD -Speed 4000 ~/rtt.log
+#     JLinkExe -device NRF52 -speed 4000 -if SWD -RTTTelnetport 19024
+#     JLinkExe -device NRF52 -speed 4000 -if SWD -RTTTelnetport 19024 -AutoConnect 1  || exit 1
+#     JLinkExe -device NRF52 -speed 4000 -if SWD -RTTTelnetport 19024 -AutoConnect 1  -SelectEmuBySN "${SEGGER}" || exit 1
+      tel
+      exit 0
+  fi
+
+  if [ "$*" == "-l" ]; then
+      echo 'J-linking using Segger logger ...'
+      tel -l
+      exit 0
+  fi
+
+  if [ "$*" == "-j1" ]; then
+      #JLinkExe -device NRF52 -speed 4000 -if SWD -RTTTelnetport 19024 -AutoConnect 1  -SelectEmuBySN "${SEGGER}" || exit 1
+      tel 1
+      exit 0
+  fi
+
+  if [ "$*" == "-j2" ]; then
+      #JLinkExe -device NRF52 -speed 4000 -if SWD -RTTTelnetport 19025 -AutoConnect 1  -SelectEmuBySN "${SEGGER}" || exit 1
+      tel 2
+      exit 0
+  fi
+
+  if [ "$*" == "-J" ]; then
+      echo 'J-linking ...'
+      JLinkExe -device NRF52 -speed 4000 -if SWD -RTTTelnetport 19024 -AutoConnect 1  || exit 1
+      exit 0
+  fi
+
+#===============================================================================
+# pristine build and run / or without run
+#===============================================================================
+
+  if [ "$*" == "-p" ]; then
+      if [ -d "$BUILD" ]
+      then
+         ec -y removing build directory:  $BUILD
+         rm -rf $BUILD
+      fi
+      nin || exit 1
+      exit 0
+  fi
+
+  if [ "$*" == "-pm" ]; then
+      if [ -d "$BUILD" ]
+      then
+         ec -y removing build directory:  $BUILD
+         rm -rf $BUILD
+      fi
+      nin -m || exit 1
+      exit 0
+  fi
+
+  if [ "$*" == "-pmh" ]; then
+      nin -pm || exit 1
+      nin -h || exit 1
+      exit 0
+  fi
+
+#===============================================================================
+# recursive build and run / or without run
+#===============================================================================
+
+  if [ "$*" == "-rpm" ]; then
+      ec -y "run -o build.log . nin -pm  # output goes to build/build.log"
+      run -o build.log . nin -pm
+      exit 0
+  fi
+
+#===============================================================================
+# terminal programs
+#===============================================================================
+
+# Screen Terminal program
+
+  if [ "$*" == "-s" ]; then
+     echo 'launching SCREEN terminal program (exit with <ctl-a> d)'
+     echo screen /dev/tty.usbmodem* 115200
+     sleep 3
+     screen /dev/tty.usbmodem* 115200
+  fi
+
+# Telnet Terminal program
+
+  if [ "$1" == "-T" ] && [ "$2" != "" ]; then
+     #telnet localhost $2
+     tel $2
+     #speed 115200, 8 data bits, 1 stop bit
+  fi
+
+  if [ "$*" == "-t" ]; then
+      tel -1
+  fi
+
+  if [ "$*" == "-t1" ]; then
+      tel -1
+  fi
+
+  if [ "$*" == "-t2" ]; then
+      tel -2
+  fi
+
+  if [ "$*" == "-tg" ]; then
+      forever=1
+      while [ $forever -le 999 ]
+      do
+         nin -T 19021       # connect with telnet using port 19021
+         clear
+         sleep 0.5
+      done
+      #speed 115200, 8 data bits, 1 stop bit
+  fi
+
+#===============================================================================
+# unlock flash memory
+#===============================================================================
+
+  if [ "$*" == "-u" ]; then   # erase flash area
+      #echo 'unlock nRF52 flash area of target ...'
+      nrfjprog --family nRF52 --recover --snr ${SEGGER} || exit 1
+      exit 0
+  fi
+
+#===============================================================================
+# west refresh after Zephyr version change
+#===============================================================================
+
+  if [ "$*" == "-w" ]; then   # using current $BOARD settings
+     OLDPATH=`pwd`
+
+     . workwith Z
+     cd ../../zephyrproject || exit 1
+
+     ec -b "# now in Zephyr $ZEPHVERS west meta tool directory "
+     pwd
+
+     ec -y "# west update"
+     west update
+
+     ec -b "# change to zephyr $ZEPHVERS source directory "
+     cd zephyr
+     pwd
+
+     ec -b "use BOARD setting: $BOARD"
+
+     ec -b "cleanup zephyr/build directory ..."
+     nin -c
+
+     ec -b "build the samples/basic/blinky app ..."
+     ec -y "west build -p auto -b $BOARD samples/basic/blinky"
+     west build -p auto -b $BOARD samples/basic/blinky || exit 1
+
+     nin -c   # cleanup ./build directory
+     ec -b "west refresh (samples/basic/blinky) complete :-)"
+
+     cd $OLDPATH
+  fi
+
+  if [ "$*" == "-w1.14.0" ]; then
+     .brd N1                        # using old NDK board indentifier
+     nin -w
+  fi
+
+  if [ "$*" == "-w2.7.0" ]; then
+     .brd n1                        # using new NDK board indentifier
+     nin -w
+  fi
+
+#===============================================================================
+# add trailer to conf.prj
+#===============================================================================
+
+# add trailer to conf.prj
+
+  if [ "$*" == "-a" ]; then
+      echo '' >>prj.conf
+      echo '# iHux: added for Segger RTT' >>prj.conf
+      #echo 'CONFIG_HAS_SEGGER_RTT=y' >>prj.conf
+      echo 'CONFIG_USE_SEGGER_RTT=y' >>prj.conf
+      echo 'CONFIG_RTT_CONSOLE=y' >>prj.conf
+      echo 'CONFIG_UART_CONSOLE=n' >>prj.conf
+      echo 'CONFIG_LOG_BUFFER_SIZE=4096' >>prj.conf
+      exit 0
+  fi
+
+# create build directory and configure for build
+
+  if [ "$*" == "-b" ]; then
+      echo 'make a clean build directory'
+      rm -rf $BUILD && mkdir $BUILD && cd $BUILD || exit 1
+      echo "cmake -GNinja -DBOARD=$BOARD .."
+      cmake -GNinja -DBOARD=$BOARD .. || exit 1
+      exit 0
+  fi

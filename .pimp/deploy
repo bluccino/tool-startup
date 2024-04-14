@@ -17,3 +17,4 @@ deps/tool-zephyr/bin/cl
 deps/tool-zephyr/bin/run
 deps/tool-zephyr/bin/we
 bin/stup
+tools/bin/nin
