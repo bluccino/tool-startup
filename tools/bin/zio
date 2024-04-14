@@ -1,0 +1,66 @@
+#!/bin/bash
+# zio: modified script for tio to conveniently select USB
+
+  if [ "$*" == "-?" ]; then
+    echo '  usage: zio            # offer a list to select USB device'
+    echo '         zio -d         # list USB devices'
+    echo '         zio --version  # print version'
+    echo ''
+    echo '  available USB devices:'
+    _LIST=`zio -d`
+    for _ITEM in $_LIST
+    do
+      echo '         '$_ITEM
+    done
+    echo ''
+    echo '  see also: te, tel'
+    exit 0
+  fi
+
+#===============================================================================
+# print version: zio --version
+#===============================================================================
+
+   if [ "$*" == "--version" ]; then
+      echo "1.0.1"; exit 0
+   fi
+
+#===============================================================================
+# find dongle USB devices
+# - usage: zio    # offer a list to select USB device'
+#===============================================================================
+
+  if [ "$*" == "-d" ]
+  then
+    ls /dev/tty* | grep usb | grep -v usbmodem000
+    exit 0
+  fi
+
+#===============================================================================
+# offer a list to select USB device
+# - usage: zio -d  # list USB devices
+#===============================================================================
+
+  if [ "$*" == "" ]
+  then
+    _N=`ls /dev/tty* | grep usb | grep -v usbmodem000 | wc -w`
+
+    if [ $_N == 1 ]; then
+      tio `zio -d`
+      exit 0
+    else
+	    select DEV in `zio -d`
+	    do
+	      echo "tio $DEV"
+	      tio $DEV
+	      exit 0
+	    done
+    fi
+  fi
+
+#===============================================================================
+# cannot deal with anything else ...
+#===============================================================================
+
+   zio -?
+   exit 1
